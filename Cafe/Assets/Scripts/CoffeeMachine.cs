@@ -7,14 +7,11 @@ public class CoffeeMachine : MonoBehaviour
     public GameObject coffeeSprite;
     public Transform coffeeSnapPoint; 
     public Transform cupBottom; 
-    public float stretchDuration = 1.0f; 
+    public float stretchDuration = 1f; 
     private bool isProducing = false; 
     private bool isCupSnapped = false; 
 
-    void Start()
-    {
-        Debug.Log("CoffeeMachine script started");
-    }
+    
     private void Update()
     {
         
@@ -38,6 +35,7 @@ public class CoffeeMachine : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log("Not Collide");
         
         if (other.CompareTag("Cup"))
         {
@@ -57,6 +55,7 @@ public class CoffeeMachine : MonoBehaviour
             coffeeSprite.transform.position = cupBottom.position;
 
             StartCoroutine(ProduceCoffee());
+            Debug.Log("Coffee making");
         }
     }
 
