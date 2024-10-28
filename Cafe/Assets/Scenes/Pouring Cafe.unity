@@ -937,7 +937,7 @@ MonoBehaviour:
   steamWand: {fileID: 825534231}
   pointer: {fileID: 1130519510}
   progressBar: {fileID: 1065441232}
-  pointerSpeed: 1
+  pointerSpeed: 4
   perfectStartX: 15.9
   perfectEndX: 57.3
   progressEndX: 116.3
