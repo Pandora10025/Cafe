@@ -84,8 +84,12 @@ public class CoffeeMachine : MonoBehaviour
         // 确保最后的 scale 达到目标值
         coffeeSprite.transform.localScale = targetScale;
 
+        // 生产结束后重置 isCupSnapped，允许杯子移动
+        isCupSnapped = false;
+
         isProducing = false;
     }
+
 
 
 }
