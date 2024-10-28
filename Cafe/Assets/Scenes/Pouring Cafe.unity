@@ -1298,6 +1298,7 @@ GameObject:
   - component: {fileID: 1048004048}
   - component: {fileID: 1048004049}
   - component: {fileID: 1048004050}
+  - component: {fileID: 1048004051}
   m_Layer: 0
   m_Name: pitcher
   m_TagString: Untagged
@@ -1565,6 +1566,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1048004051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048004045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb145a0a1d389f47b9c7c9fa7529363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pitcher: {fileID: 1048004045}
+  coffeeObject: {fileID: 517118777}
+  cappuccinoSprite: {fileID: 21300000, guid: e038378f232c4634f8c29c7d2451f7e6, type: 3}
+  cupSpriteRenderer: {fileID: 1618481512}
 --- !u!1 &1063723511
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,7 +2343,6 @@ GameObject:
   - component: {fileID: 1618481513}
   - component: {fileID: 1618481515}
   - component: {fileID: 1618481516}
-  - component: {fileID: 1618481517}
   m_Layer: 0
   m_Name: cup
   m_TagString: Cup
@@ -2486,22 +2502,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 8.057742, y: 10.375498}
   m_EdgeRadius: 0
---- !u!114 &1618481517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1618481510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9eb145a0a1d389f47b9c7c9fa7529363, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pitcher: {fileID: 1048004045}
-  coffeeObject: {fileID: 517118777}
-  cappuccinoSprite: {fileID: 21300000, guid: e038378f232c4634f8c29c7d2451f7e6, type: 3}
-  cupSpriteRenderer: {fileID: 1618481512}
 --- !u!1 &1690585831
 GameObject:
   m_ObjectHideFlags: 0

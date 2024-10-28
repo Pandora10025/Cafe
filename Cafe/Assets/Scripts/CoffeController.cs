@@ -11,15 +11,17 @@ public class CoffeeController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 打印当前 pitcher 的 sprite 名称
+        
         Debug.Log("Current pitcher sprite: " + pitcher.GetComponent<SpriteRenderer>().sprite.name);
 
         Debug.Log("Making Cappuccino");
+        Debug.Log("is cup tag: " + other.gameObject.CompareTag("Cup"));
+        Debug.Log(other.gameObject.name);
 
         
-        if (other.gameObject.CompareTag("Cup") && pitcher.GetComponent<SpriteRenderer>().sprite.name == "pitcher wiz foam")
+        if (other.gameObject.CompareTag("Cup") && pitcher.GetComponent<SpriteRenderer>().sprite.name == "pitcher wiz foam 1")
         {
-            MakeCappuccino(other.gameObject);  // 制作 Cappuccino
+            MakeCappuccino(other.gameObject); 
         }
     }
 
@@ -28,7 +30,7 @@ public class CoffeeController : MonoBehaviour
     {
         Debug.Log("Cappuccino is made!");
 
-      
+        
         SpriteRenderer cupRenderer = cup.GetComponent<SpriteRenderer>();
 
         if (cupRenderer != null)
