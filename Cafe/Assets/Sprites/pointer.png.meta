@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Cafe/Assets/Sprites/milk 1.png.meta
-guid: c4221cc0a96738244afaf9b3f3fd6bff
-========
-guid: 07367b9e9dcde2f46801a74b80a63f02
->>>>>>>> Mary:Cafe/Assets/Sprites/pitcher wiz foam.png.meta
+guid: b3abf4085748ba5498bdf1c0d9319a65
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -38,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -76,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0

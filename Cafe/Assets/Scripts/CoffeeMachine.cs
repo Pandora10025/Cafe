@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class CoffeeMachine : MonoBehaviour
 {
-    public GameObject coffeeSprite;
+    public GameObject coffeeSprite; 
     public Transform coffeeSnapPoint; 
     public Transform cupBottom; 
-    public float stretchDuration = 1f; 
+    public float stretchDuration = 0.1f; 
     private bool isProducing = false; 
     private bool isCupSnapped = false; 
 
-    
     private void Update()
     {
+        if (isProducing)
+        {
+            coffeeSprite.transform.position = cupBottom.position; // coffee with the cup
+        }
+
         
         if (Input.GetMouseButtonDown(0) && isCupSnapped)
         {
@@ -25,7 +29,6 @@ public class CoffeeMachine : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other)
     {
         Debug.Log("OnTriggerStay2D triggered with: " + other.name);
-       
         if (other.CompareTag("Cup"))
         {
             isCupSnapped = true; 
@@ -36,7 +39,6 @@ public class CoffeeMachine : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         Debug.Log("Not Collide");
-        
         if (other.CompareTag("Cup"))
         {
             isCupSnapped = false; 
@@ -62,14 +64,19 @@ public class CoffeeMachine : MonoBehaviour
     private IEnumerator ProduceCoffee()
     {
         Vector3 originalScale = coffeeSprite.transform.localScale;
-        Vector3 targetScale = new Vector3(originalScale.x, originalScale.y + 1.0f, originalScale.z); // 目标伸长的 scale
 
+        // more and more coffee
+        Vector3 targetScale = new Vector3(originalScale.x, originalScale.y + 5.0f, originalScale.z);
+
+        float stretchSpeed = 10.0f; 
         float elapsedTime = 0f;
 
         while (elapsedTime < stretchDuration)
         {
             
-            coffeeSprite.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsedTime / stretchDuration);
+            coffeeSprite.transform.localScale = Vector3.Lerp(coffeeSprite.transform.localScale, targetScale, stretchSpeed * Time.deltaTime);
+
+            
             elapsedTime += Time.deltaTime;
             yield return null; 
         }
@@ -77,7 +84,12 @@ public class CoffeeMachine : MonoBehaviour
        
         coffeeSprite.transform.localScale = targetScale;
 
-        
+        // reset coffee making, move cup
+        isCupSnapped = false;
+
         isProducing = false;
     }
+
+
+
 }
