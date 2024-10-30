@@ -6,7 +6,8 @@ public class CoffeeMachine : MonoBehaviour
 {
     public GameObject coffeeSprite; 
     public Transform coffeeSnapPoint; 
-    public Transform cupBottom; 
+    public Transform cupBottom;
+    public Transform cup;
     public float stretchDuration = 0.1f; 
     private bool isProducing = false; 
     private bool isCupSnapped = false; 
@@ -55,6 +56,9 @@ public class CoffeeMachine : MonoBehaviour
 
            
             coffeeSprite.transform.position = cupBottom.position;
+
+
+            coffeeSprite.transform.SetParent(cup.transform);
 
             StartCoroutine(ProduceCoffee());
             Debug.Log("Coffee making");

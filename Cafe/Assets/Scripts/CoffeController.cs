@@ -11,19 +11,33 @@ public class CoffeeController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        
-        Debug.Log("Current pitcher sprite: " + pitcher.GetComponent<SpriteRenderer>().sprite.name);
-
-        Debug.Log("Making Cappuccino");
-        Debug.Log("is cup tag: " + other.gameObject.CompareTag("Cup"));
+       
+      
+       
         Debug.Log(other.gameObject.name);
 
-        
+      
         if (other.gameObject.CompareTag("Cup") && pitcher.GetComponent<SpriteRenderer>().sprite.name == "pitcher wiz foam 1")
         {
-            MakeCappuccino(other.gameObject); 
+            
+            Transform coffeeInCup = other.transform.Find("Coffee");
+
+            foreach (Transform child in other.gameObject.transform)
+            {
+                Debug.Log("Child object: " + child.name);
+            }
+
+            if (coffeeInCup != null && coffeeInCup.gameObject.activeSelf)
+            {
+                MakeCappuccino(other.gameObject);  
+            }
+            else
+            {
+                Debug.Log("No coffee in the cup, cannot make Cappuccino.");
+            }
         }
     }
+
 
 
     private void MakeCappuccino(GameObject cup)
