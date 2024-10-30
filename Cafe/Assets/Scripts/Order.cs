@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class Order : MonoBehaviour
+public class OrderController : MonoBehaviour
 {
     public GameObject orderCappuccino;   // Order Cappuccino Object
     public GameObject thankYou;          // Thank You Object
     public GameObject customer;          // Customer Object
+    public Sprite NcupSprite;
+    public CoffeeMachine coffeeMachine; 
     public float thankYouDuration = 2.0f; // Duration for showing the Thank You message
     public float customerMoveDistance = 5.0f; // Distance customer moves to the left
     public float customerMoveSpeed = 2.0f;   // Speed at which customer moves
@@ -27,16 +29,16 @@ public class Order : MonoBehaviour
     {
         // Check if the colliding object is the cup with the cappuccino sprite
         SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
-        if (other.CompareTag("Cup") && cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "Cappuccino")
+        if (other.gameObject.CompareTag("Cup") && cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "cappuccino")
         {
             if (!isProcessing)
             {
-                StartCoroutine(ProcessOrder());
+                StartCoroutine(ProcessOrder(cupSpriteRenderer));
             }
         }
     }
 
-    private IEnumerator ProcessOrder()
+    private IEnumerator ProcessOrder(SpriteRenderer cupSpriteRenderer)
     {
         isProcessing = true;
 
@@ -53,7 +55,16 @@ public class Order : MonoBehaviour
         // Step 4: Deactivate the Thank You message
         thankYou.SetActive(false);
 
-        // Step 5: Move the customer to the left
+        // Step 5: Change the cup's sprite to Ncup
+        cupSpriteRenderer.sprite = NcupSprite;
+        Debug.Log("Cup sprite changed to Ncup");
+
+     
+        CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
+        coffeeMachineScript.isProducing = false;   // Reset producing state
+        coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again
+
+        // Step 6: Move the customer to the left
         Vector3 targetPosition = customerStartPos + Vector3.left * customerMoveDistance;
         while (Vector3.Distance(customer.transform.position, targetPosition) > 0.1f)
         {
@@ -61,17 +72,17 @@ public class Order : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
-        // Step 6: Wait for a delay before the customer returns
+        // Step 7: Wait for a delay before the customer returns
         yield return new WaitForSeconds(customerReturnDelay);
 
-        // Step 7: Move the customer back to the starting position
+        // Step 8: Move the customer back to the starting position
         while (Vector3.Distance(customer.transform.position, customerStartPos) > 0.1f)
         {
             customer.transform.position = Vector3.MoveTowards(customer.transform.position, customerStartPos, customerMoveSpeed * Time.deltaTime);
             yield return null; // Wait for the next frame
         }
 
-        // Step 8: Activate the order object again
+        // Step 9: Activate the order object again
         orderCappuccino.SetActive(true);
 
         // Reset the processing flag

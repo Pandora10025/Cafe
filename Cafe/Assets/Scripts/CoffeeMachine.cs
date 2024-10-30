@@ -9,8 +9,8 @@ public class CoffeeMachine : MonoBehaviour
     public Transform cupBottom;
     public Transform cup;
     public float stretchDuration = 0.1f; 
-    private bool isProducing = false; 
-    private bool isCupSnapped = false; 
+    public bool isProducing = false; 
+    public bool isCupSnapped = false; 
 
     private void Update()
     {
@@ -70,7 +70,7 @@ public class CoffeeMachine : MonoBehaviour
         Vector3 originalScale = coffeeSprite.transform.localScale;
 
         // more and more coffee
-        Vector3 targetScale = new Vector3(originalScale.x, originalScale.y + 5.0f, originalScale.z);
+        Vector3 targetScale = new Vector3(originalScale.x, originalScale.y + 40.0f, originalScale.z);
 
         float stretchSpeed = 10.0f; 
         float elapsedTime = 0f;
