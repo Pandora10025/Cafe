@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MilkController : MonoBehaviour
@@ -17,6 +16,7 @@ public class MilkController : MonoBehaviour
     private bool isZoomedIn = false;  // Whether the camera is zoomed in
     private float originalCameraSize;
     private Vector3 originalCameraPosition;
+    private Coroutine currentCoroutine; // To track current running coroutine
 
     void Start()
     {
@@ -26,26 +26,30 @@ public class MilkController : MonoBehaviour
 
     void Update()
     {
-        // 检查鼠标是否悬停在 milkObject 上
+        // mouse on milkobject or not 
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit && hit.collider != null && hit.collider.gameObject == milkObject)
         {
-            // 获取 milkObject 的 SpriteRenderer 并将 sprite 改为 gmilkSprite
+            // change milk object sprite into gmilk sprite
             SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
             if (milkSpriteRenderer != null)
             {
                 milkSpriteRenderer.sprite = gmilkSprite;
             }
 
-            // 只有当鼠标与 milkObject 碰撞时才触发 zoom in
+            //zoom in 
             if (Input.GetMouseButtonDown(0) && !isZoomedIn)
             {
-                StartCoroutine(ZoomInCamera());
+                if (currentCoroutine != null)
+                {
+                    StopCoroutine(currentCoroutine);
+                }
+                currentCoroutine = StartCoroutine(ZoomInCamera());
             }
         }
         else
         {
-            // 恢复原始 sprite，当鼠标不悬停时
+            // change back to original sprite
             if (!isZoomedIn)
             {
                 SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
@@ -56,27 +60,30 @@ public class MilkController : MonoBehaviour
             }
         }
 
-        // 按下鼠标右键时触发 zoom out
+        //right click zoom out
         if (Input.GetMouseButtonDown(1) && isZoomedIn)
         {
-            StartCoroutine(ZoomOutCamera());
+            if (currentCoroutine != null)
+            {
+                StopCoroutine(currentCoroutine);
+            }
+            currentCoroutine = StartCoroutine(ZoomOutCamera());
         }
     }
-
 
     private IEnumerator ZoomInCamera()
     {
         isZoomedIn = true;
         Vector3 targetPosition = new Vector3(cameraFocusPoint.transform.position.x, cameraFocusPoint.transform.position.y, mainCamera.transform.position.z);
 
-        // 禁用 Camera_Slide 脚本
+        //stop using camera slide when zoom in 
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
         {
             cameraSlide.enabled = false;
         }
 
-        // 平滑缩放并移动摄像机
+        // zoom in camera
         while (Mathf.Abs(mainCamera.orthographicSize - zoomInSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, zoomInSize, Time.deltaTime * zoomSpeed);
@@ -92,7 +99,7 @@ public class MilkController : MonoBehaviour
     {
         isZoomedIn = false;
 
-        // 平滑缩放并移动摄像机回到原始状态
+        // move back camera
         while (Mathf.Abs(mainCamera.orthographicSize - originalCameraSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, originalCameraSize, Time.deltaTime * zoomSpeed);
@@ -100,11 +107,11 @@ public class MilkController : MonoBehaviour
             yield return null;
         }
 
-        // 确保最后值完全恢复到原始值
+        // back to original
         mainCamera.orthographicSize = originalCameraSize;
         mainCamera.transform.position = originalCameraPosition;
 
-        // 重新启用 Camera_Slide 脚本
+        // camera slide reactiavte
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
         {

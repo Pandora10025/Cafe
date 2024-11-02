@@ -1300,7 +1300,7 @@ MonoBehaviour:
   gmilkSprite: {fileID: 21300000, guid: a7ecd956899d93745846d152f3678cc5, type: 3}
   mainCamera: {fileID: 1114189543}
   zoomInSize: 2
-  zoomSpeed: 3
+  zoomSpeed: 4
 --- !u!1 &818599875
 GameObject:
   m_ObjectHideFlags: 0
