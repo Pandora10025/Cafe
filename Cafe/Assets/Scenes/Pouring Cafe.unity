@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa70ade3de616ea4db7ef35dfe0404ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pourThreshold: 45
+  pourThreshold: 5
   origin: {fileID: 1531639807}
   streamPrefab: {fileID: 5238570228697279498, guid: 687fe5b6c1388c34882009636030b3c7, type: 3}
 --- !u!1 &825534231
