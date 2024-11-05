@@ -7,16 +7,25 @@ public class MilkController : MonoBehaviour
     public GameObject cameraFocusPoint;  // The point to focus the camera on
     public SpriteRenderer pitcherSpriteRenderer;
     public Sprite milkSprite;
-    public Sprite gmilkSprite; // Highlighted version of the milk sprite
+    public Sprite gmilkSprite;  // Highlighted version of the milk sprite
 
     public Camera mainCamera;  // The main camera
-    public float zoomInSize = 2f;  // Target size for zoom in
-    public float zoomSpeed;   // Speed of the zoom transition
+    public float zoomInSize = 3f;  // Target size for zoom in
+    public float zoomSpeed;  // Speed of the zoom transition
 
     private bool isZoomedIn = false;  // Whether the camera is zoomed in
     private float originalCameraSize;
     private Vector3 originalCameraPosition;
-    private Coroutine currentCoroutine; // To track current running coroutine
+    private Coroutine currentCoroutine;  // To track current running coroutine
+
+    // Movement and rotation variables
+    public Vector3 targetMilkPosition;  // The target position to move to
+    public float rotateBackAngle = 5f;  // Initial tilt angle
+    public float maxTiltAngle = 30f;  // Maximum tilt angle when holding 'S'
+    public float tiltSpeed = 1f;  // Speed for tilting
+
+    private bool isTilting = false;  // Whether the player is tilting the object
+    private float currentAngle = 0f;  // The current tilt angle
 
     void Start()
     {
@@ -26,18 +35,40 @@ public class MilkController : MonoBehaviour
 
     void Update()
     {
-        // mouse on milkobject or not 
+        // Check if zoomed in and camera size matches zoomInSize
+        if (isZoomedIn && Mathf.Abs(mainCamera.orthographicSize - zoomInSize) < 0.01f)
+        {
+            // Move the milk object to the target position
+            milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, targetMilkPosition, Time.deltaTime * zoomSpeed);
+
+            // Handle tilting logic when pressing 'S'
+            if (Input.GetKey(KeyCode.S))
+            {
+                isTilting = true;
+                currentAngle = Mathf.Lerp(currentAngle, maxTiltAngle, Time.deltaTime * tiltSpeed);
+            }
+            else
+            {
+                isTilting = false;
+                currentAngle = Mathf.Lerp(currentAngle, rotateBackAngle, Time.deltaTime * tiltSpeed);
+            }
+
+            // Apply the rotation to the milk object
+            milkObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+        }
+
+        // Mouse on milkObject or not
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit && hit.collider != null && hit.collider.gameObject == milkObject)
         {
-            // change milk object sprite into gmilk sprite
+            // Change milk object sprite to gmilk sprite
             SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
             if (milkSpriteRenderer != null)
             {
                 milkSpriteRenderer.sprite = gmilkSprite;
             }
 
-            //zoom in 
+            // Zoom in
             if (Input.GetMouseButtonDown(0) && !isZoomedIn)
             {
                 if (currentCoroutine != null)
@@ -49,7 +80,7 @@ public class MilkController : MonoBehaviour
         }
         else
         {
-            // change back to original sprite
+            // Change back to original sprite
             if (!isZoomedIn)
             {
                 SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
@@ -60,7 +91,7 @@ public class MilkController : MonoBehaviour
             }
         }
 
-        //right click zoom out
+        // Right click zoom out
         if (Input.GetMouseButtonDown(1) && isZoomedIn)
         {
             if (currentCoroutine != null)
@@ -76,14 +107,14 @@ public class MilkController : MonoBehaviour
         isZoomedIn = true;
         Vector3 targetPosition = new Vector3(cameraFocusPoint.transform.position.x, cameraFocusPoint.transform.position.y, mainCamera.transform.position.z);
 
-        //stop using camera slide when zoom in 
+        // Stop using camera slide when zoom in
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
         {
             cameraSlide.enabled = false;
         }
 
-        // zoom in camera
+        // Zoom in camera
         while (Mathf.Abs(mainCamera.orthographicSize - zoomInSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, zoomInSize, Time.deltaTime * zoomSpeed);
@@ -99,7 +130,7 @@ public class MilkController : MonoBehaviour
     {
         isZoomedIn = false;
 
-        // move back camera
+        // Move back camera
         while (Mathf.Abs(mainCamera.orthographicSize - originalCameraSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, originalCameraSize, Time.deltaTime * zoomSpeed);
@@ -107,11 +138,11 @@ public class MilkController : MonoBehaviour
             yield return null;
         }
 
-        // back to original
+        // Back to original
         mainCamera.orthographicSize = originalCameraSize;
         mainCamera.transform.position = originalCameraPosition;
 
-        // camera slide reactiavte
+        // Camera slide re-activate
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
         {

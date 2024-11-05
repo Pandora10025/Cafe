@@ -597,7 +597,6 @@ GameObject:
   - component: {fileID: 776708745}
   - component: {fileID: 776708748}
   - component: {fileID: 776708749}
-  - component: {fileID: 776708750}
   - component: {fileID: 776708751}
   m_Layer: 0
   m_Name: milk
@@ -667,7 +666,7 @@ Transform:
   m_GameObject: {fileID: 776708744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.69, y: -2.34, z: 0}
+  m_LocalPosition: {x: 6.95, y: -2.34, z: 0}
   m_LocalScale: {x: 0.2111534, y: 0.2111534, z: 0.2111534}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -787,27 +786,10 @@ MonoBehaviour:
   mainCamera: {fileID: 1114189543}
   zoomInSize: 3
   zoomSpeed: 4
---- !u!95 &776708750
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776708744}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b844f6993f6c8044d83dc7959e54706a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  targetMilkPosition: {x: 5.88, y: -0.63, z: 0}
+  rotateBackAngle: 5
+  maxTiltAngle: 30
+  tiltSpeed: 1
 --- !u!114 &776708751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1253,7 +1235,7 @@ Transform:
   m_GameObject: {fileID: 1048004045}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.3, y: -3.05, z: 0}
+  m_LocalPosition: {x: 4.61, y: -3.05, z: 0}
   m_LocalScale: {x: 0.2928, y: 0.2928, z: 0.2928}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2225,7 +2207,7 @@ Transform:
   m_GameObject: {fileID: 1531639806}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 5.3, z: 0}
+  m_LocalPosition: {x: -2.16, y: 5.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
