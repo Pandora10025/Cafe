@@ -1,25 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CoffeeMachine : MonoBehaviour
 {
-    public GameObject coffeeSprite; 
-    public Transform coffeeSnapPoint; 
+    public Transform coffeeSnapPoint;
     public Transform cupBottom;
     public Transform cup;
-    public float stretchDuration = 0.1f; 
-    public bool isProducing = false; 
-    public bool isCupSnapped = false; 
+    public Animator cupAnimator; // Animator for the cup to play coffee-making animation
+    public bool isProducing = false;
+    public bool isCupSnapped = false;
 
     private void Update()
     {
-        if (isProducing)
-        {
-            coffeeSprite.transform.position = cupBottom.position; // coffee with the cup
-        }
-
-        
+        // Start coffee production when cup is snapped and left mouse button is pressed
         if (Input.GetMouseButtonDown(0) && isCupSnapped)
         {
             StartCoffeeProduction();
@@ -32,7 +25,7 @@ public class CoffeeMachine : MonoBehaviour
         Debug.Log("OnTriggerStay2D triggered with: " + other.name);
         if (other.CompareTag("Cup"))
         {
-            isCupSnapped = true; 
+            isCupSnapped = true;
             Debug.Log("Cup is ready");
         }
     }
@@ -42,7 +35,7 @@ public class CoffeeMachine : MonoBehaviour
         Debug.Log("Not Collide");
         if (other.CompareTag("Cup"))
         {
-            isCupSnapped = false; 
+            isCupSnapped = false;
             Debug.Log("Cup is not ready");
         }
     }
@@ -52,48 +45,14 @@ public class CoffeeMachine : MonoBehaviour
         if (!isProducing)
         {
             isProducing = true;
-            coffeeSprite.SetActive(true); 
 
-           
-            coffeeSprite.transform.position = cupBottom.position;
+            // Play coffee-making animation
+            if (cupAnimator != null)
+            {
+                cupAnimator.SetTrigger("StartCoffeeMaking");
+            }
 
-
-            coffeeSprite.transform.SetParent(cup.transform);
-
-            StartCoroutine(ProduceCoffee());
-            Debug.Log("Coffee making");
+            Debug.Log("Coffee making started");
         }
     }
-
-    private IEnumerator ProduceCoffee()
-    {
-        Vector3 originalScale = coffeeSprite.transform.localScale;
-
-        // more and more coffee
-        Vector3 targetScale = new Vector3(originalScale.x, originalScale.y + 40.0f, originalScale.z);
-
-        float stretchSpeed = 10.0f; 
-        float elapsedTime = 0f;
-
-        while (elapsedTime < stretchDuration)
-        {
-            
-            coffeeSprite.transform.localScale = Vector3.Lerp(coffeeSprite.transform.localScale, targetScale, stretchSpeed * Time.deltaTime);
-
-            
-            elapsedTime += Time.deltaTime;
-            yield return null; 
-        }
-
-       
-        coffeeSprite.transform.localScale = targetScale;
-
-        // reset coffee making, move cup
-        isCupSnapped = false;
-
-        isProducing = false;
-    }
-
-
-
 }
