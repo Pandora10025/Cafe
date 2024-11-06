@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a7ecd956899d93745846d152f3678cc5
+guid: 63c8e0f3c9c863f46b42643ba5363f3d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,11 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-<<<<<<< HEAD
-  spritePixelsToUnits: 60
-=======
-  spritePixelsToUnits: 50
->>>>>>> Mary
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
