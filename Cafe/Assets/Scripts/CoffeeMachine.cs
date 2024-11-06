@@ -10,31 +10,13 @@ public class CoffeeMachine : MonoBehaviour
     public Transform holder; // Reference to the holder object
     public Transform holderPoint; // Reference to the holder's target point
     public float holderSnapThreshold = 0.1f; // 距离阈值，用于确定 holder 是否在正确的位置
-    public float cupSnapThreshold = 3f; // 距离阈值，用于确定 cup 是否在正确的位置
     public bool isProducing = false;
     public bool isCupSnapped = false;
 
     private void Update()
     {
-        // 检查 cup 是否位于 coffeeSnapPoint 附近
-        if (Vector3.Distance(cup.position, coffeeSnapPoint.position) <= cupSnapThreshold)
-        {
-            Debug.Log("The distance" + Vector3.Distance(cup.position, coffeeSnapPoint.position));
-            isCupSnapped = true; // 如果杯子在正确位置，设置 isCupSnapped 为 true
-        }
-        else
-        {
-            Debug.Log("The distance" + Vector3.Distance(cup.position, coffeeSnapPoint.position));
-            isCupSnapped = false; // 如果杯子不在正确位置，设置 isCupSnapped 为 false
-        }
-
         // if mouse on coffee machine
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-        if (hit.collider != null)
-        {
-            Debug.Log("Hit detected with: " + hit.collider.gameObject.name);
-        }
-
         if (hit.collider != null && hit.collider.gameObject == gameObject && Input.GetMouseButtonDown(0))
         {
             // 检查是否满足制作咖啡的条件
@@ -56,16 +38,25 @@ public class CoffeeMachine : MonoBehaviour
         }
     }
 
-    private void OnMouseOver()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (other.CompareTag("Cup") && other.transform == cup)
         {
-            // 如果点击鼠标左键，检查咖啡杯和 holder 是否在正确位置
-            if (isCupSnapped && IsHolderInPosition())
+            // 检查是否在 coffeeSnapPoint 附近
+            if (Vector3.Distance(other.transform.position, coffeeSnapPoint.position) < 2f)
             {
-                StartCoffeeProduction();
-                Debug.Log("Coffee making");
+                isCupSnapped = true; // 杯子进入 coffeeSnapPoint 范围，设置 isCupSnapped 为 true
+                Debug.Log("Cup snapped into snap point");
             }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Cup") && other.transform == cup)
+        {
+            isCupSnapped = false; // 杯子离开 coffeeSnapPoint 范围，设置 isCupSnapped 为 false
+            Debug.Log("Cup unsnapped from snap point");
         }
     }
 
