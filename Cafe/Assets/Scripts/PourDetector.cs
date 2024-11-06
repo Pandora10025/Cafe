@@ -20,12 +20,11 @@ public class PourDetector : MonoBehaviour
         }
 
         // zRotation angle
-        Debug.Log("Current zRotation: " + zRotation);
-        Debug.Log(pourThreshold);
+       
 
         // if z rotation is bigger than pourthreshold
         bool pourCheck = Mathf.Abs(zRotation) > pourThreshold;
-        Debug.Log("PourCheck: " + pourCheck);
+       
 
         
         if (isPouring != pourCheck)
@@ -34,12 +33,12 @@ public class PourDetector : MonoBehaviour
 
             if (isPouring)
             {
-                Debug.Log("Calling StartPour");
+               
                 StartPour();
             }
             else
             {
-                Debug.Log("Calling EndPour");
+               
                 EndPour();
             }
         }

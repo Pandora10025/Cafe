@@ -114,7 +114,7 @@ public class MilkController : MonoBehaviour
                 if (milkSpriteRenderer != null)
                 {
                     milkSpriteRenderer.sprite = omilkSprite;
-                    Debug.Log("Change sprite to omilkSprite: " + milkSpriteRenderer.sprite.name);
+                    //Debug.Log("Change sprite to omilkSprite: " + milkSpriteRenderer.sprite.name);
                 }
 
                 // Start zoom in
@@ -132,7 +132,7 @@ public class MilkController : MonoBehaviour
             if (!isZoomedIn && milkSpriteRenderer != null && milkSpriteRenderer.sprite != omilkSprite && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 milkSpriteRenderer.sprite = milkSprite;
-                Debug.Log("Reverting sprite to milkSprite: " + milkSpriteRenderer.sprite.name);
+                //Debug.Log("Reverting sprite to milkSprite: " + milkSpriteRenderer.sprite.name);
             }
         }
 
