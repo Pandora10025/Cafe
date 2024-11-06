@@ -9,6 +9,8 @@ public class MilkController : MonoBehaviour
     public Sprite milkSprite;
     public Sprite gmilkSprite;  // Highlighted version of the milk sprite
     public Sprite omilkSprite;  // Original version of the milk sprite
+    public Sprite pitcherWithMilk1;  // Sprite for pitcher with milk stage 1
+    public Sprite pitcherWithMilk2;  // Sprite for pitcher with milk stage 2
 
     public Camera mainCamera;  // The main camera
     public float zoomInSize = 3f;  // Target size for zoom in
@@ -28,12 +30,19 @@ public class MilkController : MonoBehaviour
 
     private bool isTilting = false;  // Whether the player is tilting the object
     private float currentAngle = 0f;  // The current tilt angle
+    private float sKeyPressedTime = 0f;  // Track how long S key is pressed
+    private bool canTilt = true;  // To determine if the player can tilt the milk
+
+    private Draggable draggableScript;  // Reference to the draggable script
 
     void Start()
     {
         originalCameraSize = mainCamera.orthographicSize;
         originalCameraPosition = mainCamera.transform.position;
         originalMilkPosition = milkObject.transform.position;  // Store the original position of the milk object
+
+        // Get the draggable script attached to the milkObject
+        draggableScript = milkObject.GetComponent<Draggable>();
     }
 
     void Update()
@@ -41,13 +50,41 @@ public class MilkController : MonoBehaviour
         // Check if zoomed in and camera size matches zoomInSize
         if (isZoomedIn && Mathf.Abs(mainCamera.orthographicSize - zoomInSize) < 0.01f)
         {
+            // Deactivate draggable script
+            if (draggableScript != null)
+            {
+                draggableScript.enabled = false;
+            }
+
             // Move the milk object to the target position
             milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, targetMilkPosition, Time.deltaTime * zoomSpeed);
 
             // Handle tilting logic when pressing 'S'
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.S) && canTilt)
             {
                 isTilting = true;
+                sKeyPressedTime += Time.deltaTime;
+
+                // Change pitcher sprite if S is pressed for more than 2 seconds
+                if (sKeyPressedTime >= 2f && pitcherSpriteRenderer.sprite != pitcherWithMilk1)
+                {
+                    pitcherSpriteRenderer.sprite = pitcherWithMilk1;
+                }
+
+                // Change pitcher sprite if S is pressed for more than 4 seconds
+                if (sKeyPressedTime >= 4f && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
+                {
+                    pitcherSpriteRenderer.sprite = pitcherWithMilk2;
+                    canTilt = false;  // Disable tilting
+
+                    // Start the process to reset milk and zoom out
+                    if (currentCoroutine != null)
+                    {
+                        StopCoroutine(currentCoroutine);
+                    }
+                    currentCoroutine = StartCoroutine(ResetMilkAndZoomOut());
+                }
+
                 currentAngle = Mathf.Lerp(currentAngle, maxTiltAngle, Time.deltaTime * tiltSpeed);
             }
             else
@@ -66,13 +103,13 @@ public class MilkController : MonoBehaviour
         {
             // Change milk object sprite to gmilk sprite when mouse is hovering
             SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
-            if (milkSpriteRenderer != null)
+            if (milkSpriteRenderer != null && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 milkSpriteRenderer.sprite = gmilkSprite;
             }
 
             // Zoom in and change to omilk sprite on left click
-            if (Input.GetMouseButtonDown(0) && !isZoomedIn)
+            if (Input.GetMouseButtonDown(0) && !isZoomedIn && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 if (milkSpriteRenderer != null)
                 {
@@ -92,7 +129,7 @@ public class MilkController : MonoBehaviour
         {
             // Change back to original sprite if not zoomed in and sprite is not already omilkSprite
             SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
-            if (!isZoomedIn && milkSpriteRenderer != null && milkSpriteRenderer.sprite != omilkSprite)
+            if (!isZoomedIn && milkSpriteRenderer != null && milkSpriteRenderer.sprite != omilkSprite && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 milkSpriteRenderer.sprite = milkSprite;
                 Debug.Log("Reverting sprite to milkSprite: " + milkSpriteRenderer.sprite.name);
@@ -156,12 +193,42 @@ public class MilkController : MonoBehaviour
         mainCamera.orthographicSize = originalCameraSize;
         mainCamera.transform.position = originalCameraPosition;
 
+        // Reactivate draggable script
+        if (draggableScript != null)
+        {
+            draggableScript.enabled = true;
+        }
+
         // Camera slide re-activate
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
         {
             cameraSlide.enabled = true;
         }
+    }
+
+    private IEnumerator ResetMilkAndZoomOut()
+    {
+        // Gradually reset the tilt and position of the milk object
+        while (Mathf.Abs(currentAngle) > 0.01f || Vector3.Distance(milkObject.transform.position, originalMilkPosition) > 0.01f)
+        {
+            currentAngle = Mathf.Lerp(currentAngle, 0f, Time.deltaTime * tiltSpeed);
+            milkObject.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, originalMilkPosition, Time.deltaTime * zoomSpeed);
+            yield return null;
+        }
+
+        // Ensure final reset to exact values
+        currentAngle = 0f;
+        milkObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+        milkObject.transform.position = originalMilkPosition;
+
+        // Start zoom out process
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+        currentCoroutine = StartCoroutine(ZoomOutCamera());
     }
 
     private void ResetMilkPositionAndRotation()
