@@ -7,11 +7,12 @@ public class OrderController : MonoBehaviour
     public GameObject thankYou;          // Thank You Object
     public GameObject customer;          // Customer Object
     public Sprite NcupSprite;
-    public CoffeeMachine coffeeMachine; 
+    public CoffeeMachine coffeeMachine;
     public float thankYouDuration = 2.0f; // Duration for showing the Thank You message
     public float customerMoveDistance = 5.0f; // Distance customer moves to the left
     public float customerMoveSpeed = 2.0f;   // Speed at which customer moves
     public float customerReturnDelay = 3.0f; // Delay before customer returns
+    public Animator cupAnimator;        // Animator for the cup
 
     private Vector3 customerStartPos;     // Customer's original position
     private bool isProcessing = false;    // To prevent multiple triggers
@@ -55,11 +56,17 @@ public class OrderController : MonoBehaviour
         // Step 4: Deactivate the Thank You message
         thankYou.SetActive(false);
 
-        // Step 5: Change the cup's sprite to Ncup
+        // Step 5: Change the cup's sprite to Ncup and enable cupAnimator
         cupSpriteRenderer.sprite = NcupSprite;
         Debug.Log("Cup sprite changed to Ncup");
 
-     
+        if (cupAnimator != null)
+        {
+            cupAnimator.enabled = true; // Enable the cup's animator
+            cupAnimator.SetTrigger("BackToIdle"); // Trigger the Idle animation
+            Debug.Log("Cup animator enabled and BackToIdle trigger set");
+        }
+
         CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
         coffeeMachineScript.isProducing = false;   // Reset producing state
         coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again

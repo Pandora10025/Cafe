@@ -11,6 +11,7 @@ public class MilkController : MonoBehaviour
     public Sprite omilkSprite;  // Original version of the milk sprite
     public Sprite pitcherWithMilk1;  // Sprite for pitcher with milk stage 1
     public Sprite pitcherWithMilk2;  // Sprite for pitcher with milk stage 2
+    public Sprite originalPitcherSprite; // Original pitcher sprite
 
     public Camera mainCamera;  // The main camera
     public float zoomInSize = 3f;  // Target size for zoom in
@@ -45,8 +46,15 @@ public class MilkController : MonoBehaviour
         draggableScript = milkObject.GetComponent<Draggable>();
     }
 
+
     void Update()
     {
+        // Check if pitcher sprite is the original, then allow tilting
+        if (pitcherSpriteRenderer.sprite == originalPitcherSprite)
+        {
+            canTilt = true;
+        }
+
         // Check if zoomed in and camera size matches zoomInSize
         if (isZoomedIn && Mathf.Abs(mainCamera.orthographicSize - zoomInSize) < 0.01f)
         {
@@ -114,7 +122,6 @@ public class MilkController : MonoBehaviour
                 if (milkSpriteRenderer != null)
                 {
                     milkSpriteRenderer.sprite = omilkSprite;
-                    //Debug.Log("Change sprite to omilkSprite: " + milkSpriteRenderer.sprite.name);
                 }
 
                 // Start zoom in
@@ -132,7 +139,6 @@ public class MilkController : MonoBehaviour
             if (!isZoomedIn && milkSpriteRenderer != null && milkSpriteRenderer.sprite != omilkSprite && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 milkSpriteRenderer.sprite = milkSprite;
-                //Debug.Log("Reverting sprite to milkSprite: " + milkSpriteRenderer.sprite.name);
             }
         }
 

@@ -8,6 +8,7 @@ public class CoffeeController : MonoBehaviour
     public SpriteRenderer cupSpriteRenderer;  // SpriteRenderer for the cup to change the sprite
     public string pitcherTag = "Pitcher"; // Tag for the pitcher
     public Animator cupAnimator; // Animator for the cup
+    public Sprite originalPitcherSprite; // Original sprite for the pitcher
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,7 +21,7 @@ public class CoffeeController : MonoBehaviour
             // 检查自身是否为 "coffee5" sprite
             if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "coffee5")
             {
-                MakeCappuccino();  // 如果以上条件满足，制作卡布奇诺
+                MakeCappuccino(pitcherSpriteRenderer);  // make cappucino
             }
             else
             {
@@ -30,16 +31,16 @@ public class CoffeeController : MonoBehaviour
         }
     }
 
-    private void MakeCappuccino()
+    private void MakeCappuccino(SpriteRenderer pitcherSpriteRenderer)
     {
-        // 禁用 Animator 以防止覆盖 Sprite 更改
+        // not animator
         if (cupAnimator != null)
         {
             cupAnimator.enabled = false;
             Debug.Log("Cup Animator disabled to change sprite.");
         }
 
-        // 将杯子的 sprite 换成 cappuccino 的 sprite
+        // cup-->cappucino
         if (cupSpriteRenderer != null)
         {
             cupSpriteRenderer.sprite = cappuccinoSprite;
@@ -50,7 +51,17 @@ public class CoffeeController : MonoBehaviour
             Debug.LogError("Cup does not have a SpriteRenderer component.");
         }
 
-        // 如果有需要可以启用 Animator，确保不会立即覆盖 Sprite
-        // cupAnimator.enabled = true;
+        // pitcher bakc to original
+        if (pitcherSpriteRenderer != null && originalPitcherSprite != null)
+        {
+            pitcherSpriteRenderer.sprite = originalPitcherSprite;
+            Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
+        }
+        else
+        {
+            Debug.LogError("Pitcher does not have a SpriteRenderer component or originalPitcherSprite is not assigned.");
+        }
+
+        
     }
 }
