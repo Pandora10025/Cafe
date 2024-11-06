@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PourDetector : MonoBehaviour
 {
-    public float pourThreshold = 5f;  
+    public float pourThreshold = 10f;  
     public Transform origin = null;
     public GameObject streamPrefab = null;
 
