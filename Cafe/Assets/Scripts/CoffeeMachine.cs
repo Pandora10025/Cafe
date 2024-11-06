@@ -40,23 +40,19 @@ public class CoffeeMachine : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Cup") && other.transform == cup)
+        if (other.CompareTag("Cup"))
         {
-            // 检查是否在 coffeeSnapPoint 附近
-            if (Vector3.Distance(other.transform.position, coffeeSnapPoint.position) < 2f)
-            {
-                isCupSnapped = true; // 杯子进入 coffeeSnapPoint 范围，设置 isCupSnapped 为 true
-                Debug.Log("Cup snapped into snap point");
-            }
+            isCupSnapped = true; // 杯子进入咖啡机范围，设置 isCupSnapped 为 true
+            Debug.Log("Cup snapped into position");
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Cup") && other.transform == cup)
+        if (other.CompareTag("Cup"))
         {
-            isCupSnapped = false; // 杯子离开 coffeeSnapPoint 范围，设置 isCupSnapped 为 false
-            Debug.Log("Cup unsnapped from snap point");
+            isCupSnapped = false; // 杯子离开咖啡机范围，设置 isCupSnapped 为 false
+            Debug.Log("Cup unsnapped from position");
         }
     }
 

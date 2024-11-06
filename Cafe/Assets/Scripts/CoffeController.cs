@@ -4,63 +4,53 @@ using UnityEngine;
 
 public class CoffeeController : MonoBehaviour
 {
-    public GameObject pitcher;  // Pitcher object
-    public GameObject coffeeObject;  // Coffee object inside the cup
     public Sprite cappuccinoSprite;  // Sprite for cappuccino
     public SpriteRenderer cupSpriteRenderer;  // SpriteRenderer for the cup to change the sprite
+    public string pitcherTag = "Pitcher"; // Tag for the pitcher
+    public Animator cupAnimator; // Animator for the cup
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-       
-      
-       
         Debug.Log(other.gameObject.name);
 
-      
-        if (other.gameObject.CompareTag("Cup") && pitcher.GetComponent<SpriteRenderer>().sprite.name == "pitcher wiz foam 1")
+        // 检查是否与 Pitcher 碰撞，且 Pitcher 的 Sprite 为 "pitcher wiz foam 2"
+        SpriteRenderer pitcherSpriteRenderer = other.GetComponent<SpriteRenderer>();
+        if (other.CompareTag(pitcherTag) && pitcherSpriteRenderer != null && pitcherSpriteRenderer.sprite.name == "pitcher wiz foam 2")
         {
-            
-            Transform coffeeInCup = other.transform.Find("Coffee");
-
-            foreach (Transform child in other.gameObject.transform)
+            // 检查自身是否为 "coffee5" sprite
+            if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "coffee5")
             {
-                Debug.Log("Child object: " + child.name);
-            }
-
-            if (coffeeInCup != null && coffeeInCup.gameObject.activeSelf)
-            {
-                MakeCappuccino(other.gameObject);  
+                MakeCappuccino();  // 如果以上条件满足，制作卡布奇诺
             }
             else
             {
-                Debug.Log("No coffee in the cup, cannot make Cappuccino.");
+                Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
+                Debug.Log("Cup sprite is not coffee5, cannot make Cappuccino.");
             }
         }
     }
 
-
-
-    private void MakeCappuccino(GameObject cup)
+    private void MakeCappuccino()
     {
-        Debug.Log("Cappuccino is made!");
-
-        
-        SpriteRenderer cupRenderer = cup.GetComponent<SpriteRenderer>();
-
-        if (cupRenderer != null)
+        // 禁用 Animator 以防止覆盖 Sprite 更改
+        if (cupAnimator != null)
         {
-           
-            cupRenderer.sprite = cappuccinoSprite;
+            cupAnimator.enabled = false;
+            Debug.Log("Cup Animator disabled to change sprite.");
+        }
 
-            Debug.Log("Cup sprite changed to: " + cupRenderer.sprite.name);
+        // 将杯子的 sprite 换成 cappuccino 的 sprite
+        if (cupSpriteRenderer != null)
+        {
+            cupSpriteRenderer.sprite = cappuccinoSprite;
+            Debug.Log("Cup sprite changed to: " + cupSpriteRenderer.sprite.name);
         }
         else
         {
             Debug.LogError("Cup does not have a SpriteRenderer component.");
         }
 
-        
-        coffeeObject.SetActive(false);
+        // 如果有需要可以启用 Animator，确保不会立即覆盖 Sprite
+        // cupAnimator.enabled = true;
     }
-
 }
