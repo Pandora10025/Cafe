@@ -1,20 +1,36 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class OrderController : MonoBehaviour
 {
+    
     public GameObject orderCappuccino;   // Order Cappuccino Object
+    public GameObject order_prefab; //Customer Order
+
+    [SerializeField]
+    public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>(); // drinks scriptable object list
+
     public GameObject thankYou;          // Thank You Object
     public GameObject customer;          // Customer Object
+
     public Sprite NcupSprite;
+
     public CoffeeMachine coffeeMachine;
+
     public float thankYouDuration = 2.0f; // Duration for showing the Thank You message
     public float customerMoveDistance = 5.0f; // Distance customer moves to the left
     public float customerMoveSpeed = 2.0f;   // Speed at which customer moves
     public float customerReturnDelay = 3.0f; // Delay before customer returns
+
+    public float pos_x;
+    public float pos_y;
+    public float pos_z;
+
     public Animator cupAnimator;        // Animator for the cup
 
     private Vector3 customerStartPos;     // Customer's original position
+
     private bool isProcessing = false;    // To prevent multiple triggers
 
     private void Start()
@@ -24,9 +40,19 @@ public class OrderController : MonoBehaviour
 
         // Ensure Thank You is deactivated at the start
         thankYou.SetActive(false);
+
+        // find cup in the scene
+        GameObject cup = GameObject.FindGameObjectWithTag("Cup");
+        
+        // assing animator for cup to cup animator
+        cupAnimator = cup.GetComponent<Animator>();
+
+        pos_x = this.transform.position.x;
+        pos_y = this.transform.position.y;
+        pos_z = this.transform.position.z;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+private void OnTriggerEnter2D(Collider2D other)
     {
         // Check if the colliding object is the cup with the cappuccino sprite
         SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
@@ -38,6 +64,17 @@ public class OrderController : MonoBehaviour
             }
         }
     }
+
+   /* public string GenerateOrder()
+    {
+
+        int tempIndex = Random.Range(0, drinks.Count);
+
+        GameObject order = Instantiate(order_prefab, new Vector3(pos_x + 5, pos_y + 10, pos_z), Quaternion.identity);
+
+
+
+    }*/
 
     private IEnumerator ProcessOrder(SpriteRenderer cupSpriteRenderer)
     {

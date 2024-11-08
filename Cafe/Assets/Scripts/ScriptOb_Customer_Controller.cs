@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ScriptOb_Customer_Controller : MonoBehaviour
 {
-    // Start is called before the first frame update
-
+  // grab customer scriptable object
     public ScriptOb_Customer customer;
+
     void Start()
     {
         
@@ -14,7 +14,11 @@ public class ScriptOb_Customer_Controller : MonoBehaviour
 
     public void SetUp()
     {
+        // grab sprite renderer of this prefab instance
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // set the sprite to the assigned customer scriptable object from customer generator 
         spriteRenderer.sprite = customer.sprite;
+
     }
 }

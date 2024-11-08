@@ -9,26 +9,24 @@ public class Customer_Generator : MonoBehaviour
 
     // spawning prefabs
     public GameObject customer_prefab;
-    public GameObject order_prefab;
+   
 
     // customer scriptable objects list
     public List<ScriptOb_Customer> customer = new List<ScriptOb_Customer>();
 
-    // drinks scriptable object list
-    public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>();
 
     // keeping track of how many customers have spawned
     int currentCustomers;
     int maxCustomers;
-    int minCustomers;
+
     
     void Start()
     {
         gameManager = GameManager.instance; 
 
         currentCustomers = 0;
-        maxCustomers = 3;
-        minCustomers = 1;
+
+        maxCustomers = 1;
 
         SpawnCustomers();
     }

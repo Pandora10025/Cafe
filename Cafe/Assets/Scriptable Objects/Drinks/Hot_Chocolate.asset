@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17cfc7ada10cf55469b8fb1ae7f619ef, type: 3}
   m_Name: Hot_Chocolate
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 6c07046a84a7f4d45abbcffda18cfe0a, type: 3}
