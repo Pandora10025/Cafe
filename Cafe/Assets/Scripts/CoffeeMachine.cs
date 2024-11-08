@@ -7,6 +7,7 @@ public class CoffeeMachine : MonoBehaviour
     public Transform cupBottom;
     public Transform cup;
     public Animator cupAnimator; // Animator，用于播放杯子的动画
+    public Animator coffeeMachineAnimator; // Animator，用于播放咖啡机的动画
     public Transform holder; // Reference to the holder object
     public Transform holderPoint; // Reference to the holder's target point
     public float holderSnapThreshold = 0.1f; // 距离阈值，用于确定 holder 是否在正确的位置
@@ -53,6 +54,13 @@ public class CoffeeMachine : MonoBehaviour
         {
             isCupSnapped = false; // 杯子离开咖啡机范围，设置 isCupSnapped 为 false
             Debug.Log("Cup unsnapped from position");
+
+            // 还原咖啡机的动画为 idle
+            if (coffeeMachineAnimator != null)
+            {
+                coffeeMachineAnimator.SetTrigger("Idle");
+                Debug.Log("CoffeeMachine returned to idle animation");
+            }
         }
     }
 
@@ -62,10 +70,18 @@ public class CoffeeMachine : MonoBehaviour
         {
             isProducing = true;
 
+            // 播放咖啡机的制作咖啡动画
+            if (coffeeMachineAnimator != null)
+            {
+                coffeeMachineAnimator.SetTrigger("StartCoffeeMaking");
+                Debug.Log("CoffeeMachine started coffee-making animation");
+            }
+
             // 播放制作咖啡动画
             if (cupAnimator != null)
             {
                 cupAnimator.SetTrigger("StartCoffeeMaking");
+                Debug.Log("Cup started coffee-making animation");
             }
 
             Debug.Log("Coffee making started");
