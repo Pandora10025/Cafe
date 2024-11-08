@@ -783,7 +783,6 @@ GameObject:
   - component: {fileID: 776708745}
   - component: {fileID: 776708748}
   - component: {fileID: 776708749}
-  - component: {fileID: 776708751}
   - component: {fileID: 776708752}
   m_Layer: 0
   m_Name: milk
@@ -853,7 +852,7 @@ Transform:
   m_GameObject: {fileID: 776708744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.02, y: -2.33, z: 0}
+  m_LocalPosition: {x: 5.07, y: -2.24, z: 0}
   m_LocalScale: {x: 0.2111534, y: 0.2111534, z: 0.2111534}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -965,28 +964,14 @@ MonoBehaviour:
   pitcherWithMilk1: {fileID: 21300000, guid: 8ac183abc13c5e34daf1eefda0a6aca3, type: 3}
   pitcherWithMilk2: {fileID: 21300000, guid: e76ec44981c9a68479c5e0ddab2bff2b, type: 3}
   originalPitcherSprite: {fileID: 21300000, guid: 7efdea37073314b4dae1c3a5f46c62e9, type: 3}
+  milkObjectAnimator: {fileID: 776708752}
   mainCamera: {fileID: 1114189543}
   zoomInSize: 3
   zoomSpeed: 4
-  targetMilkPosition: {x: 5.7, y: -1.87, z: 0}
-  rotateBackAngle: 10
-  maxTiltAngle: 40
+  targetMilkPosition: {x: 4.09, y: -1.37, z: 0}
+  rotateBackAngle: 5
+  maxTiltAngle: 10
   tiltSpeed: 1
---- !u!114 &776708751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776708744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa70ade3de616ea4db7ef35dfe0404ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pourThreshold: 15
-  origin: {fileID: 1531639807}
-  streamPrefab: {fileID: 5238570228697279498, guid: 687fe5b6c1388c34882009636030b3c7, type: 3}
 --- !u!95 &776708752
 Animator:
   serializedVersion: 5

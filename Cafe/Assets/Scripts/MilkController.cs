@@ -12,6 +12,7 @@ public class MilkController : MonoBehaviour
     public Sprite pitcherWithMilk1;  // Sprite for pitcher with milk stage 1
     public Sprite pitcherWithMilk2;  // Sprite for pitcher with milk stage 2
     public Sprite originalPitcherSprite; // Original pitcher sprite
+    public Animator milkObjectAnimator;  // Animator for the milk object
 
     public Camera mainCamera;  // The main camera
     public float zoomInSize = 3f;  // Target size for zoom in
@@ -46,7 +47,6 @@ public class MilkController : MonoBehaviour
         draggableScript = milkObject.GetComponent<Draggable>();
     }
 
-
     void Update()
     {
         // Check if pitcher sprite is the original, then allow tilting
@@ -67,6 +67,12 @@ public class MilkController : MonoBehaviour
             // Move the milk object to the target position
             milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, targetMilkPosition, Time.deltaTime * zoomSpeed);
 
+            // Trigger milk pouring animation when milk reaches the target position
+            if (milkObjectAnimator != null && milkObject.transform.position == targetMilkPosition)
+            {
+                milkObjectAnimator.SetTrigger("MilkPouring");
+            }
+
             // Handle tilting logic when pressing 'S'
             if (Input.GetKey(KeyCode.S) && canTilt)
             {
@@ -84,6 +90,12 @@ public class MilkController : MonoBehaviour
                 {
                     pitcherSpriteRenderer.sprite = pitcherWithMilk2;
                     canTilt = false;  // Disable tilting
+
+                    // Set milk object animation back to MilkPour
+                    if (milkObjectAnimator != null)
+                    {
+                        milkObjectAnimator.SetTrigger("MilkPour");
+                    }
 
                     // Start the process to reset milk and zoom out
                     if (currentCoroutine != null)
@@ -124,6 +136,12 @@ public class MilkController : MonoBehaviour
                     milkSpriteRenderer.sprite = omilkSprite;
                 }
 
+                // Trigger milk pour animation
+                if (milkObjectAnimator != null)
+                {
+                    milkObjectAnimator.SetTrigger("MilkPour");
+                }
+
                 // Start zoom in
                 if (currentCoroutine != null)
                 {
@@ -148,8 +166,8 @@ public class MilkController : MonoBehaviour
             if (Mathf.Abs(currentAngle) < 15f)
             {
                 // Reset milk position and rotation if tilt is less than 15 degrees
-                ResetMilkPositionAndRotation();
-            }
+                ResetMilkAndZoomOut();
+;            }
 
             if (currentCoroutine != null)
             {
@@ -158,7 +176,6 @@ public class MilkController : MonoBehaviour
             currentCoroutine = StartCoroutine(ZoomOutCamera());
         }
     }
-
 
     private IEnumerator ZoomInCamera()
     {
@@ -206,6 +223,12 @@ public class MilkController : MonoBehaviour
             draggableScript.enabled = true;
         }
 
+        // Set milk object animation to idle
+        if (milkObjectAnimator != null)
+        {
+            milkObjectAnimator.SetTrigger("Idle");
+        }
+
         // Camera slide re-activate
         Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
         if (cameraSlide != null)
@@ -230,26 +253,17 @@ public class MilkController : MonoBehaviour
         milkObject.transform.rotation = Quaternion.Euler(0, 0, 0);
         milkObject.transform.position = originalMilkPosition;
 
+        // Set milk object animation to idle
+        if (milkObjectAnimator != null)
+        {
+            milkObjectAnimator.SetTrigger("Idle");
+        }
+
         // Start zoom out process
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);
         }
         currentCoroutine = StartCoroutine(ZoomOutCamera());
-    }
-
-    private void ResetMilkPositionAndRotation()
-    {
-        // Reset milk object to original position and rotation
-        milkObject.transform.position = originalMilkPosition;  // Move back to original position
-        milkObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-        currentAngle = 0f;  // Reset current angle
-
-        // Set sprite back to original
-        SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
-        if (milkSpriteRenderer != null)
-        {
-            milkSpriteRenderer.sprite = milkSprite;
-        }
     }
 }
