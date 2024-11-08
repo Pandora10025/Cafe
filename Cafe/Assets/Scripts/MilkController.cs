@@ -125,7 +125,15 @@ public class MilkController : MonoBehaviour
             SpriteRenderer milkSpriteRenderer = milkObject.GetComponent<SpriteRenderer>();
             if (milkSpriteRenderer != null && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
-                milkSpriteRenderer.sprite = gmilkSprite;
+
+                if (milkObjectAnimator != null)
+                {
+                    milkObjectAnimator.SetTrigger("Highlight");
+                }
+            }
+            else
+            {
+                milkObjectAnimator.SetTrigger("Idle");
             }
 
             // Zoom in and change to omilk sprite on left click
