@@ -590,7 +590,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.15315342, y: 5.651893}
+  m_Offset: {x: 0.023033619, y: 5.651893}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -601,7 +601,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 15.603159, y: 4.7315664}
+  m_Size: {x: 17.077858, y: 4.7315664}
   m_EdgeRadius: 0
 --- !u!95 &234143701
 Animator:
@@ -958,14 +958,14 @@ MonoBehaviour:
   milkObject: {fileID: 776708744}
   cameraFocusPoint: {fileID: 402322892}
   pitcherSpriteRenderer: {fileID: 1048004046}
-  milkObjectAnimator: {fileID: 776708752}
-  mainCamera: {fileID: 1114189543}
   milkSprite: {fileID: 21300000, guid: d981ab426198d8e4a8f5b460dd8d95b2, type: 3}
   gmilkSprite: {fileID: 21300000, guid: a7ecd956899d93745846d152f3678cc5, type: 3}
   omilkSprite: {fileID: 21300000, guid: f686e520fbda3ce42af5bcc58f47c98d, type: 3}
   pitcherWithMilk1: {fileID: 21300000, guid: 8ac183abc13c5e34daf1eefda0a6aca3, type: 3}
   pitcherWithMilk2: {fileID: 21300000, guid: e76ec44981c9a68479c5e0ddab2bff2b, type: 3}
   originalPitcherSprite: {fileID: 21300000, guid: 7efdea37073314b4dae1c3a5f46c62e9, type: 3}
+  milkObjectAnimator: {fileID: 776708752}
+  mainCamera: {fileID: 1114189543}
   zoomInSize: 3
   zoomSpeed: 4
   targetMilkPosition: {x: 4.09, y: -1.37, z: 0}
@@ -3659,7 +3659,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.71946216, g: 0.81960785, b: 0.6392157, a: 1}
+  m_Color: {r: 0.5971902, g: 0.7169812, b: 0.5050433, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
