@@ -4,143 +4,100 @@ using UnityEngine;
 public class MilkController : MonoBehaviour
 {
     public GameObject milkObject;
-    public GameObject cameraFocusPoint;
+    public GameObject cameraFocusPoint;  // The point to focus the camera on
     public SpriteRenderer pitcherSpriteRenderer;
     public Sprite originalPitcherSprite;
     public Sprite pitcherWithMilk1;
     public Sprite pitcherWithMilk2;
-    public Animator milkObjectAnimator;
-    public Camera mainCamera;
-    public float zoomInSize = 3f;
-    public float zoomSpeed;
-    public Vector3 targetMilkPosition;
-    private Vector3 originalMilkPosition;
+    public Animator milkObjectAnimator;  // Animator for the milk object
+
+    public Camera mainCamera;  // The main camera
+    public float zoomInSize = 3f;  // Target size for zoom in
+    public float zoomSpeed;  // Speed of the zoom transition
+
+    private bool isZoomedIn = false;  // Whether the camera is zoomed in
     private float originalCameraSize;
     private Vector3 originalCameraPosition;
+    private Coroutine currentCoroutine;  // To track current running coroutine
 
-    private float sKeyPressedTime = 0f;
-    private bool isZoomedIn = false;
-    private Coroutine currentCoroutine;
-    private enum MilkState { MouseHover, ZoomIn, Pour, Back }
-    private MilkState currentState;
+    // Movement variables
+    public Vector3 targetMilkPosition;  // The target position to move to during zoom in
+    private Vector3 originalMilkPosition;  // The original position of the milk object
+    private float sKeyPressedTime = 0f;  // Track how long S key is pressed
+    private bool isPouring = false;  // Whether pouring is in progress
+
+    private Draggable draggableScript;  // Reference to the draggable script
 
     void Start()
     {
         originalCameraSize = mainCamera.orthographicSize;
         originalCameraPosition = mainCamera.transform.position;
-        originalMilkPosition = milkObject.transform.position;
-        currentState = MilkState.MouseHover;  // ³õÊ¼×´Ì¬
+        originalMilkPosition = milkObject.transform.position;  // Store the original position of the milk object
+
+        // Get the draggable script attached to the milkObject
+        draggableScript = milkObject.GetComponent<Draggable>();
     }
 
     void Update()
     {
-        switch (currentState)
-        {
-            case MilkState.MouseHover:
-                HandleMouseHover();
-                break;
-            case MilkState.ZoomIn:
-                HandleZoomIn();
-                break;
-            case MilkState.Pour:
-                HandlePour();
-                break;
-            case MilkState.Back:
-                HandleBack();
-                break;
-        }
-    }
-
-    private void HandleMouseHover()
-    {
+        // Handle mouse hover to trigger highlight animation
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit.collider != null && hit.collider.gameObject == milkObject)
         {
-            if (milkObjectAnimator != null && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Highlight"))
+            if (milkObjectAnimator != null)
             {
                 milkObjectAnimator.SetTrigger("Highlight");
             }
 
-            if (Input.GetMouseButtonDown(0))
+            // Start zoom in process if clicked and pitcher sprite is original
+            if (Input.GetMouseButtonDown(0) && pitcherSpriteRenderer.sprite == originalPitcherSprite && !isZoomedIn)
             {
-                if (pitcherSpriteRenderer.sprite == originalPitcherSprite)
+                if (currentCoroutine != null)
                 {
-                    currentState = MilkState.ZoomIn;
+                    StopCoroutine(currentCoroutine);
                 }
+                currentCoroutine = StartCoroutine(ZoomInCamera());
             }
         }
         else
         {
-            if (milkObjectAnimator != null && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            if (milkObjectAnimator != null)
             {
                 milkObjectAnimator.SetTrigger("Idle");
             }
         }
-    }
 
-    private void HandleZoomIn()
-    {
-        if (!isZoomedIn)
-        {
-            if (currentCoroutine != null)
-            {
-                StopCoroutine(currentCoroutine);
-            }
-            currentCoroutine = StartCoroutine(ZoomInCamera());
-        }
-
-        milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, targetMilkPosition, Time.deltaTime * zoomSpeed);
-
-        if (Vector3.Distance(milkObject.transform.position, targetMilkPosition) < 0.01f)
-        {
-            currentState = MilkState.Pour;
-        }
-    }
-
-    private void HandlePour()
-    {
-        if (Input.GetKey(KeyCode.S))
+        // Handle pouring when zoomed in
+        if (isZoomedIn && Input.GetKey(KeyCode.S))
         {
             sKeyPressedTime += Time.deltaTime;
 
-            if (milkObjectAnimator != null && sKeyPressedTime < 2f && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("MilkReady"))
+            if (!isPouring && milkObjectAnimator != null)
             {
                 milkObjectAnimator.SetTrigger("MilkReady");
+                isPouring = true; // Start pouring process
             }
-            else if (sKeyPressedTime >= 2f && sKeyPressedTime < 3f && pitcherSpriteRenderer.sprite != pitcherWithMilk1)
+
+            if (sKeyPressedTime >= 2f && pitcherSpriteRenderer.sprite != pitcherWithMilk1)
             {
                 pitcherSpriteRenderer.sprite = pitcherWithMilk1;
             }
-            else if (sKeyPressedTime >= 3f && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
+
+            if (sKeyPressedTime >= 4f && pitcherSpriteRenderer.sprite != pitcherWithMilk2)
             {
                 pitcherSpriteRenderer.sprite = pitcherWithMilk2;
-                currentState = MilkState.Back;
+                currentCoroutine = StartCoroutine(ResetMilkAndZoomOut());
             }
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
             sKeyPressedTime = 0f;
-            if (milkObjectAnimator != null && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("MilkBack"))
+            isPouring = false;
+            if (milkObjectAnimator != null)
             {
                 milkObjectAnimator.SetTrigger("MilkBack");
             }
         }
-    }
-
-    private void HandleBack()
-    {
-        if (milkObjectAnimator != null && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("MilkBack"))
-        {
-            milkObjectAnimator.SetTrigger("MilkBack");
-        }
-
-        if (currentCoroutine != null)
-        {
-            StopCoroutine(currentCoroutine);
-        }
-        currentCoroutine = StartCoroutine(ResetMilkAndZoomOut());
-
-        pitcherSpriteRenderer.sprite = originalPitcherSprite;
     }
 
     private IEnumerator ZoomInCamera()
@@ -165,12 +122,21 @@ public class MilkController : MonoBehaviour
 
         mainCamera.orthographicSize = zoomInSize;
         mainCamera.transform.position = targetPosition;
-    }
 
+        // Move the milk object to the target position smoothly
+        while (Vector3.Distance(milkObject.transform.position, targetMilkPosition) > 0.01f)
+        {
+            milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, targetMilkPosition, Time.deltaTime * zoomSpeed);
+            yield return null;
+        }
+        milkObject.transform.position = targetMilkPosition;
+    }
 
     private IEnumerator ResetMilkAndZoomOut()
     {
-        // Move milk object back to original position
+        isZoomedIn = false;
+
+        // Move milk object back to original position smoothly
         while (Vector3.Distance(milkObject.transform.position, originalMilkPosition) > 0.01f)
         {
             milkObject.transform.position = Vector3.Lerp(milkObject.transform.position, originalMilkPosition, Time.deltaTime * zoomSpeed);
@@ -178,7 +144,7 @@ public class MilkController : MonoBehaviour
         }
         milkObject.transform.position = originalMilkPosition;
 
-        // Reset camera to original position and size
+        // Reset camera to original position and size smoothly
         while (Mathf.Abs(mainCamera.orthographicSize - originalCameraSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, originalCameraSize, Time.deltaTime * zoomSpeed);
@@ -189,13 +155,32 @@ public class MilkController : MonoBehaviour
         mainCamera.orthographicSize = originalCameraSize;
         mainCamera.transform.position = originalCameraPosition;
 
+        // Reactivate draggable script
+        if (draggableScript != null)
+        {
+            draggableScript.enabled = true;
+        }
+
         // Set milk object animation to idle
-        if (milkObjectAnimator != null && !milkObjectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (milkObjectAnimator != null)
         {
             milkObjectAnimator.SetTrigger("Idle");
         }
 
-        isZoomedIn = false;
-        currentState = MilkState.MouseHover;  // ·µ»Øµ½×î³õ×´Ì¬
+        // Camera slide re-activate
+        Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
+        if (cameraSlide != null)
+        {
+            cameraSlide.enabled = true;
+        }
+    }
+
+    // Function to trigger milk pouring after ready animation ends (using AnimationEvent)
+    public void StartMilkPouring()
+    {
+        if (milkObjectAnimator != null)
+        {
+            milkObjectAnimator.SetTrigger("MilkPouring");
+        }
     }
 }
