@@ -146,19 +146,23 @@ public class MilkController : MonoBehaviour
     private IEnumerator ZoomInCamera()
     {
         isZoomedIn = true;
-
-        // 将目标位置的 Y 值设置为摄像机原始位置，防止向上移动过多
         Vector3 targetPosition = new Vector3(cameraFocusPoint.transform.position.x, cameraFocusPoint.transform.position.y, mainCamera.transform.position.z);
 
-        // Lerp 到目标大小和目标位置
-        while (Mathf.Abs(mainCamera.orthographicSize - zoomInSize) > 0.01f || Vector3.Distance(mainCamera.transform.position, targetPosition) > 0.01f)
+        // Stop using camera slide when zoom in
+        Camera_Slide cameraSlide = mainCamera.GetComponent<Camera_Slide>();
+        if (cameraSlide != null)
+        {
+            cameraSlide.enabled = false;
+        }
+
+        // Zoom in camera
+        while (Mathf.Abs(mainCamera.orthographicSize - zoomInSize) > 0.01f)
         {
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, zoomInSize, Time.deltaTime * zoomSpeed);
             mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, Time.deltaTime * zoomSpeed);
             yield return null;
         }
 
-        // 确保摄像机最终精确到目标位置和目标大小
         mainCamera.orthographicSize = zoomInSize;
         mainCamera.transform.position = targetPosition;
     }
