@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class OrderController : MonoBehaviour
 {
     
-    public GameObject orderCappuccino;   // Order Cappuccino Object
-    public GameObject order_prefab; //Customer Order
-
+    public GameObject order;   // Order Object
+    string orderName; // order name 
+    public GameObject order_prefab; //Customer Order speech bubble
     [SerializeField]
     public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>(); // drinks scriptable object list
+
+    public GameManager gameManager;  // Game manager is need for later
 
     public GameObject thankYou;          // Thank You Object
     public GameObject customer;          // Customer Object
@@ -35,6 +38,9 @@ public class OrderController : MonoBehaviour
 
     private void Start()
     {
+        // Grabbing the game manager instance
+        gameManager = GameManager.instance;
+
         // Store the starting position of the customer
         customerStartPos = customer.transform.position;
 
@@ -50,13 +56,17 @@ public class OrderController : MonoBehaviour
         pos_x = this.transform.position.x;
         pos_y = this.transform.position.y;
         pos_z = this.transform.position.z;
+
+        GenerateOrder();
     }
 
-private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        orderName = order.GetComponent<Sprite>().name;
+
         // Check if the colliding object is the cup with the cappuccino sprite
         SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
-        if (other.gameObject.CompareTag("Cup") && cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "cappuccino")
+        if (other.gameObject.CompareTag("Cup") && cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == orderName)
         {
             if (!isProcessing)
             {
@@ -65,23 +75,33 @@ private void OnTriggerEnter2D(Collider2D other)
         }
     }
 
-   /* public string GenerateOrder()
+    public GameObject GenerateOrder()
     {
 
         int tempIndex = Random.Range(0, drinks.Count);
+        Debug.Log(tempIndex);
 
-        GameObject order = Instantiate(order_prefab, new Vector3(pos_x + 5, pos_y + 10, pos_z), Quaternion.identity);
+        GameObject order = Instantiate(order_prefab, new Vector3(pos_x + 6, pos_y + 3, pos_z), Quaternion.identity);
 
+        ScriptOb_Drinks_Controller tempController = order.GetComponent<ScriptOb_Drinks_Controller>();
 
+        while (tempIndex >= drinks.Count)
+        {
+            tempIndex = Random.Range(0, drinks.Count);
+        }
 
-    }*/
+        tempController.drink = drinks[tempIndex];
+        tempController.SetUp();
+
+        return order;
+    }
 
     private IEnumerator ProcessOrder(SpriteRenderer cupSpriteRenderer)
     {
         isProcessing = true;
 
         // Step 1: Deactivate the current order
-        orderCappuccino.SetActive(false);
+        order.SetActive(false);
 
         // Step 2: Activate the Thank You message
         thankYou.SetActive(true);
@@ -108,6 +128,7 @@ private void OnTriggerEnter2D(Collider2D other)
         coffeeMachineScript.isProducing = false;   // Reset producing state
         coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again
 
+
         // Step 6: Move the customer to the left
         Vector3 targetPosition = customerStartPos + Vector3.left * customerMoveDistance;
         while (Vector3.Distance(customer.transform.position, targetPosition) > 0.1f)
@@ -115,6 +136,20 @@ private void OnTriggerEnter2D(Collider2D other)
             customer.transform.position = Vector3.MoveTowards(customer.transform.position, targetPosition, customerMoveSpeed * Time.deltaTime);
             yield return null; // Wait for the next frame
         }
+
+        // Tell Customer Generator Script that there's no customer any more 
+        gameManager.currentCustomers = gameManager.currentCustomers--;
+
+        // Reset the processing flag
+        isProcessing = false;
+
+        //Destroy this gameobject 
+
+        Destroy(gameObject);
+    }
+
+    private IEnumerator CustomerEnter()
+    {
 
         // Step 7: Wait for a delay before the customer returns
         yield return new WaitForSeconds(customerReturnDelay);
@@ -125,11 +160,5 @@ private void OnTriggerEnter2D(Collider2D other)
             customer.transform.position = Vector3.MoveTowards(customer.transform.position, customerStartPos, customerMoveSpeed * Time.deltaTime);
             yield return null; // Wait for the next frame
         }
-
-        // Step 9: Activate the order object again
-        orderCappuccino.SetActive(true);
-
-        // Reset the processing flag
-        isProcessing = false;
     }
 }

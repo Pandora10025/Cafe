@@ -20,19 +20,20 @@ public class Customer_Generator : MonoBehaviour
     int maxCustomers;
 
     
-    void Start()
+   public void Start()
     {
         gameManager = GameManager.instance; 
 
-        currentCustomers = 0;
+        currentCustomers = gameManager.currentCustomers;
 
-        maxCustomers = 1;
+        maxCustomers = gameManager.maxCustomers;
 
         SpawnCustomers();
     }
 
-    public void SpawnCustomers()
+    public int SpawnCustomers()
     {
+        Debug.Log("Im in customer generator");
         if (currentCustomers < maxCustomers)
         {
             int tempIndex = Random.Range(0, customer.Count);
@@ -50,6 +51,12 @@ public class Customer_Generator : MonoBehaviour
             tempController.SetUp();
 
             currentCustomers++;
+
+            return currentCustomers;
+        }
+        else
+        {
+            return currentCustomers;
         }
 
     }
