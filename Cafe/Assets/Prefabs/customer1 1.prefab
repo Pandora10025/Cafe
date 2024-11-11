@@ -105,6 +105,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 06bbc583712967b43919cc857d904638, type: 2}
   - {fileID: 11400000, guid: 3439a4aeeb4cb864eb63a61229637a19, type: 2}
   - {fileID: 11400000, guid: 61ec6fe2150c74e46bad4639e101ab02, type: 2}
+  gameManager: {fileID: 0}
   thankYou: {fileID: 5349471334396604403, guid: c8d44aa36f6ed60438259a7e911a9e48, type: 3}
   customer: {fileID: 8921479845098245823}
   NcupSprite: {fileID: 21300000, guid: 0278f3c2344ff224b8008179b60c6938, type: 3}
@@ -153,7 +154,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4.015, y: 8.28}
+    oldSize: {x: 8.03, y: 16.56}
     newSize: {x: 8.03, y: 16.56}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

@@ -2868,7 +2868,7 @@ MonoBehaviour:
   chocolatePowderHighlight: {fileID: 21300000, guid: 3261ad66ae6c780469ffec62a0938df2, type: 3}
   chocolatePowderOpened: {fileID: 21300000, guid: bb57ebcdfae9849468ab01a7cc217efc, type: 3}
   originalChocolatePowder: {fileID: 21300000, guid: 23f19e8a57865f04987bb5ae8b14020c, type: 3}
-  cupAnimator: {fileID: 1618481518}
+  cupAnimator: {fileID: 3715169643558878955}
 --- !u!60 &1798449154
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3538,8 +3538,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cappuccinoSprite: {fileID: 21300000, guid: e038378f232c4634f8c29c7d2451f7e6, type: 3}
-  chocolateSprite: {fileID: 0}
-  matchaSprite: {fileID: 0}
+  chocolateSprite: {fileID: 21300000, guid: 6c07046a84a7f4d45abbcffda18cfe0a, type: 3}
+  matchaSprite: {fileID: 21300000, guid: 793eaecd858df0546a8c743b8567643d, type: 3}
   cupSpriteRenderer: {fileID: 889547611537790837}
   pitcherTag: Pitcher
   cupAnimator: {fileID: 3715169643558878955}
