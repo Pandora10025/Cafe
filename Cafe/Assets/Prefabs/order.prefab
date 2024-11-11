@@ -97,4 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0fa4d3ff8204884fb733974ecc09704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drink: {fileID: 0}
+  drink: {fileID: 11400000, guid: 06bbc583712967b43919cc857d904638, type: 2}

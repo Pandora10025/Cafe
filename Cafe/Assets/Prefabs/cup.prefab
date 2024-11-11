@@ -218,6 +218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cappuccinoSprite: {fileID: 21300000, guid: e038378f232c4634f8c29c7d2451f7e6, type: 3}
+  chocolateSprite: {fileID: 21300000, guid: c7ec8e5ce44362948bee6242b7faa936, type: 3}
+  matchaSprite: {fileID: 21300000, guid: 692b951c07d2b3c4ca1b402518b58c05, type: 3}
   cupSpriteRenderer: {fileID: 1977998361181160080}
   pitcherTag: Pitcher
   cupAnimator: {fileID: 2640766113812048654}
