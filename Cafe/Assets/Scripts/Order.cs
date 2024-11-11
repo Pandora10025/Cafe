@@ -5,14 +5,11 @@ using UnityEngine;
 
 public class OrderController : MonoBehaviour
 {
-    
-    public GameObject order;   // Order Object
-    string orderName; // order name 
-    public GameObject order_prefab; //Customer Order speech bubble
-    [SerializeField]
-    public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>(); // drinks scriptable object list
+    public GameObject order_prefab;  // Customer Order speech bubble prefab
+    private GameObject currentOrderInstance;  // Reference to the current order instance
 
-    public GameManager gameManager;  // Game manager is need for later
+    [SerializeField]
+    public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>(); // Drinks scriptable object list
 
     public GameObject thankYou;          // Thank You Object
     public GameObject customer;          // Customer Object
@@ -33,24 +30,21 @@ public class OrderController : MonoBehaviour
     public Animator cupAnimator;        // Animator for the cup
 
     private Vector3 customerStartPos;     // Customer's original position
-
     private bool isProcessing = false;    // To prevent multiple triggers
 
     private void Start()
     {
-        // Grabbing the game manager instance
-        gameManager = GameManager.instance;
-
+        coffeeMachine = FindObjectOfType<CoffeeMachine>();
         // Store the starting position of the customer
         customerStartPos = customer.transform.position;
 
         // Ensure Thank You is deactivated at the start
         thankYou.SetActive(false);
 
-        // find cup in the scene
+        // Find cup in the scene
         GameObject cup = GameObject.FindGameObjectWithTag("Cup");
-        
-        // assing animator for cup to cup animator
+
+        // Assign animator for cup to cupAnimator
         cupAnimator = cup.GetComponent<Animator>();
 
         pos_x = this.transform.position.x;
@@ -62,38 +56,64 @@ public class OrderController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        orderName = order.GetComponent<Sprite>().name;
-
-        // Check if the colliding object is the cup with the cappuccino sprite
-        SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
-        if (other.gameObject.CompareTag("Cup") && cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == orderName)
+        // Check if the colliding object is the cup
+        if (other.gameObject.CompareTag("Cup"))
         {
-            if (!isProcessing)
+            // Get the sprite on the cup
+            SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
+            if (cupSpriteRenderer != null && currentOrderInstance != null)
             {
-                StartCoroutine(ProcessOrder(cupSpriteRenderer));
+                // Get the sprite on the current order instance
+                SpriteRenderer orderSpriteRenderer = currentOrderInstance.GetComponent<SpriteRenderer>();
+
+                if (orderSpriteRenderer != null)
+                {
+                    // Debug log for sprite comparison
+                    Debug.Log("Cup sprite name: " + cupSpriteRenderer.sprite.name);
+                    Debug.Log("Order sprite name: " + orderSpriteRenderer.sprite.name);
+
+                    if (cupSpriteRenderer.sprite.name == orderSpriteRenderer.sprite.name)
+                    {
+                        if (!isProcessing)
+                        {
+                            StartCoroutine(ProcessOrder(cupSpriteRenderer));
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Order and cup sprite do not match.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Current order instance does not have a SpriteRenderer component.");
+                }
             }
         }
     }
 
     public GameObject GenerateOrder()
     {
-
         int tempIndex = Random.Range(0, drinks.Count);
-        Debug.Log(tempIndex);
+        Debug.Log("Generated order index: " + tempIndex);
 
-        GameObject order = Instantiate(order_prefab, new Vector3(pos_x + 6, pos_y + 3, pos_z), Quaternion.identity);
+        // Instantiate the order prefab and assign it to currentOrderInstance
+        currentOrderInstance = Instantiate(order_prefab, new Vector3(pos_x + 6, pos_y + 3, pos_z), Quaternion.identity);
 
-        ScriptOb_Drinks_Controller tempController = order.GetComponent<ScriptOb_Drinks_Controller>();
+        // Set up the current order instance with the drink information
+        ScriptOb_Drinks_Controller tempController = currentOrderInstance.GetComponent<ScriptOb_Drinks_Controller>();
 
-        while (tempIndex >= drinks.Count)
+        if (tempController != null && tempIndex < drinks.Count)
         {
-            tempIndex = Random.Range(0, drinks.Count);
+            tempController.drink = drinks[tempIndex];
+            tempController.SetUp();
+        }
+        else
+        {
+            Debug.LogError("Error setting up the order instance.");
         }
 
-        tempController.drink = drinks[tempIndex];
-        tempController.SetUp();
-
-        return order;
+        return currentOrderInstance;
     }
 
     private IEnumerator ProcessOrder(SpriteRenderer cupSpriteRenderer)
@@ -101,7 +121,10 @@ public class OrderController : MonoBehaviour
         isProcessing = true;
 
         // Step 1: Deactivate the current order
-        order.SetActive(false);
+        if (currentOrderInstance != null)
+        {
+            currentOrderInstance.SetActive(false);
+        }
 
         // Step 2: Activate the Thank You message
         thankYou.SetActive(true);
@@ -113,23 +136,33 @@ public class OrderController : MonoBehaviour
         // Step 4: Deactivate the Thank You message
         thankYou.SetActive(false);
 
-        // Step 5: Change the cup's sprite to Ncup and enable cupAnimator
-        cupSpriteRenderer.sprite = NcupSprite;
-        Debug.Log("Cup sprite changed to Ncup");
-
+        // Step 5: Trigger the cup to go back to Idle animation
         if (cupAnimator != null)
         {
             cupAnimator.enabled = true; // Enable the cup's animator
-            cupAnimator.SetTrigger("BackToIdle"); // Trigger the Idle animation
+            cupAnimator.SetTrigger("BackToIdle"); // Trigger the BackToIdle animation
             Debug.Log("Cup animator enabled and BackToIdle trigger set");
+
+            // Step 6: 等待 Animator 进入 Idle 状态
+            while (!cupAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                yield return null; // Wait until the Animator transitions to the Idle state
+            }
+
+            // 禁用 Animator，允许手动控制 Sprite
+            cupAnimator.enabled = false;
         }
 
+        // Step 7: Set the cup's sprite to idle (NcupSprite)
+        cupSpriteRenderer.sprite = NcupSprite;
+        Debug.Log("Cup sprite changed to Ncup");
+
+        // Step 8: Reset Coffee Machine States
         CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
         coffeeMachineScript.isProducing = false;   // Reset producing state
         coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again
 
-
-        // Step 6: Move the customer to the left
+        // Step 9: Move the customer to the left
         Vector3 targetPosition = customerStartPos + Vector3.left * customerMoveDistance;
         while (Vector3.Distance(customer.transform.position, targetPosition) > 0.1f)
         {
@@ -137,28 +170,16 @@ public class OrderController : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
-        // Tell Customer Generator Script that there's no customer any more 
-        gameManager.currentCustomers = gameManager.currentCustomers--;
-
-        // Reset the processing flag
-        isProcessing = false;
-
-        //Destroy this gameobject 
-
-        Destroy(gameObject);
-    }
-
-    private IEnumerator CustomerEnter()
-    {
-
-        // Step 7: Wait for a delay before the customer returns
-        yield return new WaitForSeconds(customerReturnDelay);
-
-        // Step 8: Move the customer back to the starting position
-        while (Vector3.Distance(customer.transform.position, customerStartPos) > 0.1f)
+        // Step 10: Destroy the current order instance
+        if (currentOrderInstance != null)
         {
-            customer.transform.position = Vector3.MoveTowards(customer.transform.position, customerStartPos, customerMoveSpeed * Time.deltaTime);
-            yield return null; // Wait for the next frame
+            Destroy(currentOrderInstance);
+            currentOrderInstance = null; // Clear the reference after destroying
         }
+
+        GenerateOrder();
+
+        // Step 11: Reset the processing flag
+        isProcessing = false;
     }
 }

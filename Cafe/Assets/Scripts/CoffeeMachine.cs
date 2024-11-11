@@ -20,7 +20,7 @@ public class CoffeeMachine : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (hit.collider != null && hit.collider.gameObject == gameObject && Input.GetMouseButtonDown(0))
         {
-            // 检查是否满足制作咖啡的条件
+            // coffee makable
             Debug.Log("Mouse clicked on CoffeeMachine");
             if (isCupSnapped)
             {
@@ -43,7 +43,7 @@ public class CoffeeMachine : MonoBehaviour
     {
         if (other.CompareTag("Cup"))
         {
-            isCupSnapped = true; // 杯子进入咖啡机范围，设置 isCupSnapped 为 true
+            isCupSnapped = true; 
             Debug.Log("Cup snapped into position");
         }
     }
@@ -52,10 +52,10 @@ public class CoffeeMachine : MonoBehaviour
     {
         if (other.CompareTag("Cup"))
         {
-            isCupSnapped = false; // 杯子离开咖啡机范围，设置 isCupSnapped 为 false
+            isCupSnapped = false; // cup leave the coffeemachine，设置 isCupSnapped 为 false
             Debug.Log("Cup unsnapped from position");
 
-            // 还原咖啡机的动画为 idle
+            // set coffee machine animation to idle
             if (coffeeMachineAnimator != null)
             {
                 coffeeMachineAnimator.SetTrigger("Idle");
@@ -70,14 +70,14 @@ public class CoffeeMachine : MonoBehaviour
         {
             isProducing = true;
 
-            // 播放咖啡机的制作咖啡动画
+            // coffee machine animation
             if (coffeeMachineAnimator != null)
             {
                 coffeeMachineAnimator.SetTrigger("StartCoffeeMaking");
                 Debug.Log("CoffeeMachine started coffee-making animation");
             }
 
-            // 播放制作咖啡动画
+            // play making coffee animation
             if (cupAnimator != null)
             {
                 cupAnimator.SetTrigger("StartCoffeeMaking");
@@ -88,7 +88,7 @@ public class CoffeeMachine : MonoBehaviour
         }
     }
 
-    // 检查 holder 是否在正确的位置上
+    // if holder is on the right place
     private bool IsHolderInPosition()
     {
         if (holder == null || holderPoint == null)

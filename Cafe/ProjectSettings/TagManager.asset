@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cup
   - Pitcher
+  - CoffeeMachine
   layers:
   - Default
   - TransparentFX
