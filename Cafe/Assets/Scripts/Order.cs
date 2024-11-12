@@ -134,16 +134,17 @@ public class OrderController : MonoBehaviour
             currentOrderParentInstance.SetActive(false);
         }
 
-        // Step 2: Change cup animator back to idle
+        // Step 2: Change cup animator back to idle and reset triggers
         if (cupAnimator != null)
         {
-            cupAnimator.enabled = true; // Enable the cup's animator
-            cupAnimator.SetTrigger("BackToIdle"); // Trigger the Idle animation
+            // Reset all animation triggers before setting to Idle
+            cupAnimator.ResetTrigger("StartCoffeeMaking");
+            cupAnimator.SetTrigger("BackToIdle");
             Debug.Log("Cup animator enabled and BackToIdle trigger set");
         }
         else
         {
-            Debug.Log("Cupanimator is null");
+            Debug.Log("Cup animator is null");
         }
 
         CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
@@ -197,6 +198,7 @@ public class OrderController : MonoBehaviour
         // Step 9: Reset the processing flag
         isProcessing = false;
     }
+
 
 
 }

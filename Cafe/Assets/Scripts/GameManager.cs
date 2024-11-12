@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.VFX;
 
 public enum GameState{
@@ -95,5 +96,11 @@ public class GameManager : MonoBehaviour
 
         }
     }
- 
+    public void SwitchScene(string newScene)
+    {
+        Debug.Log("switch scene called " + newScene);
+        SceneManager.LoadScene(newScene);
+       
+    }
+
 }

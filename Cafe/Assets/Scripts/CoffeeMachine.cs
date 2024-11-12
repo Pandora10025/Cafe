@@ -80,6 +80,11 @@ public class CoffeeMachine : MonoBehaviour
             // play making coffee animation
             if (cupAnimator != null)
             {
+                // Reset all animation triggers before starting new animation
+                cupAnimator.ResetTrigger("BackToIdle");
+                cupAnimator.ResetTrigger("MilkReady");
+                cupAnimator.ResetTrigger("MilkBack");
+
                 cupAnimator.SetTrigger("StartCoffeeMaking");
                 Debug.Log("Cup started coffee-making animation");
             }
@@ -87,6 +92,7 @@ public class CoffeeMachine : MonoBehaviour
             Debug.Log("Coffee making started");
         }
     }
+
 
     // if holder is on the right place
     private bool IsHolderInPosition()
