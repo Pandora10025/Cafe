@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class CoffeeMachine : MonoBehaviour
 {
-    public Transform coffeeSnapPoint; // 咖啡机上用于放杯子的目标位置
+    public Transform coffeeSnapPoint; 
     public Transform cupBottom;
     public Transform cup;
-    public Animator cupAnimator; // Animator，用于播放杯子的动画
-    public Animator coffeeMachineAnimator; // Animator，用于播放咖啡机的动画
+    public Animator cupAnimator; 
+    public Animator coffeeMachineAnimator; // Animator，
     public Transform holder; // Reference to the holder object
     public Transform holderPoint; // Reference to the holder's target point
-    public float holderSnapThreshold = 0.1f; // 距离阈值，用于确定 holder 是否在正确的位置
+    public float holderSnapThreshold = 0.1f; 
     public bool isProducing = false;
     public bool isCupSnapped = false;
 

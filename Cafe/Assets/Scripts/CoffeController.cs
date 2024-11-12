@@ -16,125 +16,47 @@ public class CoffeeController : MonoBehaviour
     {
         Debug.Log(other.gameObject.name);
 
-        // 检查是否与 Pitcher 碰撞，且 Pitcher 的 Sprite 为 "pitcher wiz foam 2"
         SpriteRenderer pitcherSpriteRenderer = other.GetComponent<SpriteRenderer>();
-        if (other.CompareTag(pitcherTag) && pitcherSpriteRenderer != null && pitcherSpriteRenderer.sprite.name == "pitcher wiz foam 2")
+        if (other.CompareTag(pitcherTag) && pitcherSpriteRenderer != null)
         {
-            // 检查自身是否为 "coffee5" sprite
-            if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "coffee5")
+            // Cappuccino logic
+            if (pitcherSpriteRenderer.sprite.name == "pitcher wiz foam 2")
             {
-                MakeCappuccino(pitcherSpriteRenderer);  // make cappucino
+                if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "coffee5")
+                {
+                    cupAnimator.SetTrigger("Cappucino");  // make cappucino
+                    pitcherSpriteRenderer.sprite = originalPitcherSprite;
+                    Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
+                }
+                else
+                {
+                    Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
+                    Debug.Log("Cup sprite is not coffee5, cannot make Cappuccino.");
+                }
             }
-            else
-            {
-                Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
-                Debug.Log("Cup sprite is not coffee5, cannot make Cappuccino.");
-            }
-        }
 
-        if (other.CompareTag(pitcherTag) && pitcherSpriteRenderer != null && pitcherSpriteRenderer.sprite.name == "pitcher wiz milk 2")
-        {
-            // 检查自身是否为 "chocoalte" sprite
-            if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "chocolatecup")
+            // Chocolate and Matcha logic
+            if (pitcherSpriteRenderer.sprite.name == "pitcher wiz milk 2")
             {
-                MakeChocolate(pitcherSpriteRenderer);  // make chocolate
-            }
-            else
-            {
-                Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
-                Debug.Log("Cup sprite is not chocolatecup, cannot make chocolate.");
-            }
-        }
-
-        if (other.CompareTag(pitcherTag) && pitcherSpriteRenderer != null && pitcherSpriteRenderer.sprite.name == "pitcher wiz milk 2")
-        {
-            // 检查自身是否为 "matcha" sprite
-            if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "matchacup")
-            {
-                MakeMatcha(pitcherSpriteRenderer);  // make chocolate
-            }
-            else
-            {
-                Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
-                Debug.Log("Cup sprite is not chocolatecup, cannot make matcha.");
+                if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "chocolatecup")
+                {
+                    cupAnimator.SetTrigger("Chocolate"); // make chocolate
+                    pitcherSpriteRenderer.sprite = originalPitcherSprite;
+                    Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
+                }
+                else if (cupSpriteRenderer != null && cupSpriteRenderer.sprite.name == "matchacup")
+                {
+                    cupAnimator.SetTrigger("Matcha"); // make matcha
+                    pitcherSpriteRenderer.sprite = originalPitcherSprite;
+                    Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
+                }
+                else
+                {
+                    Debug.Log("Current cup sprite is: " + cupSpriteRenderer.sprite.name);
+                    Debug.Log("Cup sprite is not matchacup or chocolatecup, cannot make drink.");
+                }
             }
         }
     }
 
-    private void MakeCappuccino(SpriteRenderer pitcherSpriteRenderer)
-    {
-        // not animator
-        if (cupAnimator != null)
-        {
-            cupAnimator.enabled = false;
-            Debug.Log("Cup Animator disabled to change sprite.");
-        }
-
-        // cup-->cappucino
-        if (cupSpriteRenderer != null)
-        {
-            cupSpriteRenderer.sprite = cappuccinoSprite;
-            Debug.Log("Cup sprite changed to: " + cupSpriteRenderer.sprite.name);
-        }
-
-
-        // pitcher bakc to original
-        if (pitcherSpriteRenderer != null && originalPitcherSprite != null)
-        {
-            pitcherSpriteRenderer.sprite = originalPitcherSprite;
-            Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
-        }
-
-    }
-    private void MakeChocolate(SpriteRenderer pitcherSpriteRenderer)
-    {
-        // not animator
-        if (cupAnimator != null)
-        {
-            cupAnimator.enabled = false;
-            Debug.Log("Cup Animator disabled to change sprite.");
-        }
-
-        // cup-->chocolate
-        if (cupSpriteRenderer != null)
-        {
-            cupSpriteRenderer.sprite = chocolateSprite;
-            Debug.Log("Cup sprite changed to: " + cupSpriteRenderer.sprite.name);
-        }
-
-
-        // pitcher bakc to original
-        if (pitcherSpriteRenderer != null && originalPitcherSprite != null)
-        {
-            pitcherSpriteRenderer.sprite = originalPitcherSprite;
-            Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
-        }
-
-    }
-
-    private void MakeMatcha(SpriteRenderer pitcherSpriteRenderer)
-    {
-        // not animator
-        if (cupAnimator != null)
-        {
-            cupAnimator.enabled = false;
-            Debug.Log("Cup Animator disabled to change sprite.");
-        }
-
-        // cup-->matcha
-        if (cupSpriteRenderer != null)
-        {
-            cupSpriteRenderer.sprite = matchaSprite;
-            Debug.Log("Cup sprite changed to: " + cupSpriteRenderer.sprite.name);
-        }
-
-
-        // pitcher bakc to original
-        if (pitcherSpriteRenderer != null && originalPitcherSprite != null)
-        {
-            pitcherSpriteRenderer.sprite = originalPitcherSprite;
-            Debug.Log("Pitcher sprite changed back to: " + originalPitcherSprite.name);
-        }
-
-    }
 }

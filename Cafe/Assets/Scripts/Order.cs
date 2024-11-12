@@ -1,24 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class OrderController : MonoBehaviour
 {
     public GameObject order_prefab;  // Customer Order speech bubble prefab
-    private GameObject currentOrderInstance;  // Reference to the current order instance
+    public GameObject speechBubblePrefab;  // Prefab for the speech bubble
+    private GameObject currentOrderParentInstance;  // Parent GameObject to hold both order and speech bubble
 
     [SerializeField]
     public List<ScriptOb_Drinks> drinks = new List<ScriptOb_Drinks>(); // Drinks scriptable object list
 
-    public GameObject thankYou;          // Thank You Object
+         
     public GameObject customer;          // Customer Object
 
     public Sprite NcupSprite;
 
     public CoffeeMachine coffeeMachine;
 
-    public float thankYouDuration = 2.0f; // Duration for showing the Thank You message
+     
     public float customerMoveDistance = 5.0f; // Distance customer moves to the left
     public float customerMoveSpeed = 2.0f;   // Speed at which customer moves
     public float customerReturnDelay = 3.0f; // Delay before customer returns
@@ -35,11 +35,12 @@ public class OrderController : MonoBehaviour
     private void Start()
     {
         coffeeMachine = FindAnyObjectByType<CoffeeMachine>();
+        cupAnimator = FindAnyObjectByType<Animator>();
+
         // Store the starting position of the customer
         customerStartPos = customer.transform.position;
 
-        // Ensure Thank You is deactivated at the start
-        thankYou.SetActive(false);
+        
 
         // Find cup in the scene
         GameObject cup = GameObject.FindGameObjectWithTag("Cup");
@@ -61,10 +62,10 @@ public class OrderController : MonoBehaviour
         {
             // Get the sprite on the cup
             SpriteRenderer cupSpriteRenderer = other.GetComponent<SpriteRenderer>();
-            if (cupSpriteRenderer != null && currentOrderInstance != null)
+            if (cupSpriteRenderer != null && currentOrderParentInstance != null)
             {
                 // Get the sprite on the current order instance
-                SpriteRenderer orderSpriteRenderer = currentOrderInstance.GetComponent<SpriteRenderer>();
+                SpriteRenderer orderSpriteRenderer = currentOrderParentInstance.GetComponentInChildren<SpriteRenderer>();
 
                 if (orderSpriteRenderer != null)
                 {
@@ -97,11 +98,18 @@ public class OrderController : MonoBehaviour
         int tempIndex = Random.Range(0, drinks.Count);
         Debug.Log("Generated order index: " + tempIndex);
 
-        // Instantiate the order prefab and assign it to currentOrderInstance
-        currentOrderInstance = Instantiate(order_prefab, new Vector3(pos_x + 6, pos_y + 3, pos_z), Quaternion.identity);
+        // Create a parent GameObject to hold both order and speech bubble
+        currentOrderParentInstance = new GameObject("OrderWithSpeechBubble");
+
+        // Instantiate the order prefab and assign it as a child of the parent GameObject
+        GameObject orderInstance = Instantiate(order_prefab, new Vector3(pos_x + 3.4f, pos_y + 2.5f, pos_z), Quaternion.identity, currentOrderParentInstance.transform);
+        currentOrderParentInstance = orderInstance; // Update currentOrderParentInstance with newly created GameObject instance.
+
+        // Instantiate the speech bubble prefab and assign it as a child of the parent GameObject
+        GameObject speechBubbleInstance = Instantiate(speechBubblePrefab, new Vector3(-19, 1, 0), Quaternion.identity, currentOrderParentInstance.transform);
 
         // Set up the current order instance with the drink information
-        ScriptOb_Drinks_Controller tempController = currentOrderInstance.GetComponent<ScriptOb_Drinks_Controller>();
+        ScriptOb_Drinks_Controller tempController = orderInstance.GetComponent<ScriptOb_Drinks_Controller>();
 
         if (tempController != null && tempIndex < drinks.Count)
         {
@@ -113,7 +121,7 @@ public class OrderController : MonoBehaviour
             Debug.LogError("Error setting up the order instance.");
         }
 
-        return currentOrderInstance;
+        return currentOrderParentInstance;
     }
 
     private IEnumerator ProcessOrder(SpriteRenderer cupSpriteRenderer)
@@ -121,37 +129,28 @@ public class OrderController : MonoBehaviour
         isProcessing = true;
 
         // Step 1: Deactivate the current order
-        if (currentOrderInstance != null)
+        if (currentOrderParentInstance != null)
         {
-            currentOrderInstance.SetActive(false);
+            currentOrderParentInstance.SetActive(false);
         }
 
-        // Step 2: Activate the Thank You message
-        thankYou.SetActive(true);
-        Debug.Log("Thank You!");
-
-        // Step 3: Wait for a few seconds
-        yield return new WaitForSeconds(thankYouDuration);
-
-        // Step 4: Deactivate the Thank You message
-        thankYou.SetActive(false);
-
-        // Step 5: Change the cup's sprite to Ncup and enable cupAnimator
-        cupSpriteRenderer.sprite = NcupSprite;
-        Debug.Log("Cup sprite changed to Ncup");
-
+        // Step 2: Change cup animator back to idle
         if (cupAnimator != null)
         {
             cupAnimator.enabled = true; // Enable the cup's animator
             cupAnimator.SetTrigger("BackToIdle"); // Trigger the Idle animation
             Debug.Log("Cup animator enabled and BackToIdle trigger set");
         }
+        else
+        {
+            Debug.Log("Cupanimator is null");
+        }
 
         CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
         coffeeMachineScript.isProducing = false;   // Reset producing state
         coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again
 
-        // Step 6: Move the customer to the left
+        // Step 3: Move the customer to the left
         Vector3 targetPosition = customerStartPos + Vector3.left * customerMoveDistance;
         while (Vector3.Distance(customer.transform.position, targetPosition) > 0.1f)
         {
@@ -159,14 +158,45 @@ public class OrderController : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
-        // Destroy the current order instance
-        if (currentOrderInstance != null)
+        if (customer != null)
         {
-            Destroy(currentOrderInstance);
-            currentOrderInstance = null; // Clear the reference after destroying
+            // Step 4: Get customer type before destroying
+            ScriptOb_Customer_Controller customerController = customer.GetComponent<ScriptOb_Customer_Controller>();
+            if (customerController != null && customerController.customer != null)
+            {
+                ScriptOb_Customer customerScriptableObject = customerController.customer;
+
+                // Step 5: Destroy the current customer instance
+                Destroy(customer);
+                customer = null; // Clear the reference after destroying
+
+                // Step 6: Reduce the customer count and spawn a new customer
+                Customer_Generator customerGenerator = FindObjectOfType<Customer_Generator>();
+                if (customerGenerator != null)
+                {
+                    customerGenerator.currentCustomers--;  // Reduce the current customer count to allow new spawn
+                    customerGenerator.SpawnCustomers();    // Spawn new customer
+                }
+
+                // Step 7: Generate seating for the customer that was served
+                CustomerSeatingManager seatingManager = FindObjectOfType<CustomerSeatingManager>();
+                if (seatingManager != null)
+                {
+                    seatingManager.CreateSeating(customerScriptableObject); // Pass the Scriptable Object to CreateSeating
+                }
+            }
         }
 
-        // Reset the processing flag
+        // Step 8: Destroy the current order instance along with its speech bubble
+        if (currentOrderParentInstance != null)
+        {
+            Destroy(currentOrderParentInstance);
+            currentOrderParentInstance = null; // Clear the reference after destroying
+        }
+
+        // Step 9: Reset the processing flag
         isProcessing = false;
     }
+
+
 }

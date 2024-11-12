@@ -16,7 +16,7 @@ public class Customer_Generator : MonoBehaviour
 
 
     // keeping track of how many customers have spawned
-    int currentCustomers;
+    public int currentCustomers;
     int maxCustomers;
 
     

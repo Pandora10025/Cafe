@@ -5,6 +5,7 @@ public class PitcherDraggableController : MonoBehaviour
     public Camera mainCamera;  // The main camera
     private Draggable draggableScript;  // Reference to the draggable script
     private float originalCameraSize;
+    private bool isDraggableEnabled; // To keep track of the current state
 
     void Start()
     {
@@ -18,20 +19,23 @@ public class PitcherDraggableController : MonoBehaviour
         if (draggableScript != null)
         {
             draggableScript.enabled = true;
+            isDraggableEnabled = true;
         }
     }
 
     void Update()
     {
-        // Disable draggable script when camera size is less than the original size
-        if (mainCamera.orthographicSize < originalCameraSize && draggableScript != null)
+        if (mainCamera.orthographicSize != originalCameraSize && draggableScript != null && isDraggableEnabled)
         {
+            // Disable draggable script when camera size is not the original size
             draggableScript.enabled = false;
+            isDraggableEnabled = false;
         }
-        // Enable draggable script when camera size returns to the original size
-        else if (mainCamera.orthographicSize >= originalCameraSize && draggableScript != null)
+        else if (mainCamera.orthographicSize == originalCameraSize && draggableScript != null && !isDraggableEnabled)
         {
+            // Enable draggable script when camera size returns to the original size
             draggableScript.enabled = true;
+            isDraggableEnabled = true;
         }
     }
 }
