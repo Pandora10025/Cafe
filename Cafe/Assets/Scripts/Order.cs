@@ -34,7 +34,7 @@ public class OrderController : MonoBehaviour
 
     private void Start()
     {
-        coffeeMachine = FindObjectOfType<CoffeeMachine>();
+        coffeeMachine = FindAnyObjectByType<CoffeeMachine>();
         // Store the starting position of the customer
         customerStartPos = customer.transform.position;
 
@@ -136,33 +136,22 @@ public class OrderController : MonoBehaviour
         // Step 4: Deactivate the Thank You message
         thankYou.SetActive(false);
 
-        // Step 5: Trigger the cup to go back to Idle animation
-        if (cupAnimator != null)
-        {
-            cupAnimator.enabled = true; // Enable the cup's animator
-            cupAnimator.SetTrigger("BackToIdle"); // Trigger the BackToIdle animation
-            Debug.Log("Cup animator enabled and BackToIdle trigger set");
-
-            // Step 6: 等待 Animator 进入 Idle 状态
-            while (!cupAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                yield return null; // Wait until the Animator transitions to the Idle state
-            }
-
-            // 禁用 Animator，允许手动控制 Sprite
-            cupAnimator.enabled = false;
-        }
-
-        // Step 7: Set the cup's sprite to idle (NcupSprite)
+        // Step 5: Change the cup's sprite to Ncup and enable cupAnimator
         cupSpriteRenderer.sprite = NcupSprite;
         Debug.Log("Cup sprite changed to Ncup");
 
-        // Step 8: Reset Coffee Machine States
+        if (cupAnimator != null)
+        {
+            cupAnimator.enabled = true; // Enable the cup's animator
+            cupAnimator.SetTrigger("BackToIdle"); // Trigger the Idle animation
+            Debug.Log("Cup animator enabled and BackToIdle trigger set");
+        }
+
         CoffeeMachine coffeeMachineScript = coffeeMachine.GetComponent<CoffeeMachine>();
         coffeeMachineScript.isProducing = false;   // Reset producing state
         coffeeMachineScript.isCupSnapped = false;  // Allow the cup to be snapped again
 
-        // Step 9: Move the customer to the left
+        // Step 6: Move the customer to the left
         Vector3 targetPosition = customerStartPos + Vector3.left * customerMoveDistance;
         while (Vector3.Distance(customer.transform.position, targetPosition) > 0.1f)
         {
@@ -170,16 +159,14 @@ public class OrderController : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
-        // Step 10: Destroy the current order instance
+        // Destroy the current order instance
         if (currentOrderInstance != null)
         {
             Destroy(currentOrderInstance);
             currentOrderInstance = null; // Clear the reference after destroying
         }
 
-        GenerateOrder();
-
-        // Step 11: Reset the processing flag
+        // Reset the processing flag
         isProcessing = false;
     }
 }
