@@ -14,6 +14,9 @@ public class CoffeeMachine : MonoBehaviour
     public bool isProducing = false;
     public bool isCupSnapped = false;
 
+    public AudioSource coffeemachine;
+    public AudioSource ItemPlaced;
+
     private void Update()
     {
         // if mouse on coffee machine
@@ -43,7 +46,8 @@ public class CoffeeMachine : MonoBehaviour
     {
         if (other.CompareTag("Cup"))
         {
-            isCupSnapped = true; 
+            isCupSnapped = true;
+            ItemPlaced.Play();
             Debug.Log("Cup snapped into position");
         }
     }
@@ -74,6 +78,7 @@ public class CoffeeMachine : MonoBehaviour
             if (coffeeMachineAnimator != null)
             {
                 coffeeMachineAnimator.SetTrigger("StartCoffeeMaking");
+                coffeemachine.Play();
                 Debug.Log("CoffeeMachine started coffee-making animation");
             }
 

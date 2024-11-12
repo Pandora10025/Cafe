@@ -19,6 +19,7 @@ public class Customer_Generator : MonoBehaviour
     public int currentCustomers;
     int maxCustomers;
 
+    public AudioSource DoorBell;
     
    public void Start()
     {
@@ -39,6 +40,7 @@ public class Customer_Generator : MonoBehaviour
             int tempIndex = Random.Range(0, customer.Count);
 
             GameObject customerTemp = Instantiate(customer_prefab);
+            DoorBell.Play();
 
             ScriptOb_Customer_Controller tempController = customerTemp.GetComponent<ScriptOb_Customer_Controller>();
 

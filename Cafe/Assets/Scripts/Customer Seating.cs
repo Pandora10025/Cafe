@@ -9,7 +9,9 @@ public class CustomerSeatingManager : MonoBehaviour
 
     public Transform foxPosition;             
     public Transform raccoonPosition;       
-    public Transform dogPosition;           
+    public Transform dogPosition;
+
+    public AudioSource Leave;
 
     public void CreateSeating(ScriptOb_Customer customer)
     {
@@ -56,6 +58,7 @@ public class CustomerSeatingManager : MonoBehaviour
         if (seating != null)
         {
             Destroy(seating);
+            Leave.Play();
         }
     }
 }

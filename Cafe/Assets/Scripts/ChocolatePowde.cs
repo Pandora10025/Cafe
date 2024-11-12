@@ -9,6 +9,8 @@ public class ChocolatePowderController : MonoBehaviour
     public Sprite originalChocolatePowder;  // Original version of the chocolate powder sprite
     public Animator cupAnimator;  // Animator for the cup
 
+    public AudioSource OpenLid;
+
     private void Start()
     {
         if (chocolatePowderSpriteRenderer == null)
@@ -42,6 +44,7 @@ public class ChocolatePowderController : MonoBehaviour
         {
             // Change the chocolate powder sprite to the opened version
             chocolatePowderSpriteRenderer.sprite = chocolatePowderOpened;
+            OpenLid.Play();
         }
 
         // Trigger the cup animation to change its current animation to "chocolate"

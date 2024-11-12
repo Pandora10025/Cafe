@@ -28,6 +28,8 @@ public class MilkController : MonoBehaviour
 
     private Draggable draggableScript;  // Reference to the draggable script
 
+    public AudioSource PourMilk;
+
     void Start()
     {
         originalCameraSize = mainCamera.orthographicSize;
@@ -67,17 +69,22 @@ public class MilkController : MonoBehaviour
             }
         }
 
-        // Handle pouring when zoomed in
         if (isZoomedIn && Input.GetKey(KeyCode.S))
         {
             sKeyPressedTime += Time.deltaTime;
 
-            if (!isPouring && milkObjectAnimator != null)
+            // Only play PourMilk sound once when pouring starts
+            if (!isPouring)
             {
-                milkObjectAnimator.SetTrigger("MilkReady");
+                PourMilk.Play();
                 isPouring = true; // Start pouring process
+                if (milkObjectAnimator != null)
+                {
+                    milkObjectAnimator.SetTrigger("MilkReady");
+                }
             }
 
+            // Update pitcher sprite when specific conditions are met
             if (sKeyPressedTime >= 2f && pitcherSpriteRenderer.sprite != pitcherWithMilk1)
             {
                 pitcherSpriteRenderer.sprite = pitcherWithMilk1;
@@ -91,12 +98,19 @@ public class MilkController : MonoBehaviour
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
-            sKeyPressedTime = 0f;
-            isPouring = false;
-            if (milkObjectAnimator != null)
+            // Stop the pouring sound and reset pouring state when the S key is released
+            if (isPouring)
             {
-                milkObjectAnimator.SetTrigger("MilkBack");
+                PourMilk.Stop();
+                isPouring = false;
+
+                if (milkObjectAnimator != null)
+                {
+                    milkObjectAnimator.SetTrigger("MilkBack");
+                }
             }
+
+            sKeyPressedTime = 0f;
         }
     }
 

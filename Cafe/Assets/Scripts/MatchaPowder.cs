@@ -10,6 +10,8 @@ public class MatchaPowder : MonoBehaviour
     public Sprite originalMatchaPowder;  // Original version of the chocolate powder sprite
     public Animator cupAnimator;  // Animator for the cup
 
+    public AudioSource OpenLid;
+
     private void Start()
     {
         if (matchaPowderSpriteRenderer == null)
@@ -43,6 +45,7 @@ public class MatchaPowder : MonoBehaviour
         {
             // Change the chocolate powder sprite to the opened version
             matchaPowderSpriteRenderer.sprite = matchaPowderOpened;
+            OpenLid.Play();
         }
 
         // Trigger the cup animation to change its current animation to "chocolate"
