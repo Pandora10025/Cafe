@@ -6,6 +6,7 @@ public class HolderController : MonoBehaviour
     public Animator holderAnimator;  // Animator 
     public GameObject holder;  // Holder object
     public Transform holderPoint;  // Holder position
+    
 
     private bool isMovingToHolderPoint = false;  // holder moving?
 
@@ -38,12 +39,14 @@ public class HolderController : MonoBehaviour
 
         
         holder.transform.position = holderPoint.position;
+       
 
         
         if (holderAnimator != null)
         {
             holderAnimator.SetTrigger("holderMove");
         }
+       
 
         isMovingToHolderPoint = false;
     }

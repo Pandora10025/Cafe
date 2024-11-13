@@ -5,11 +5,13 @@ public class CustomerSeatingManager : MonoBehaviour
 {
     public GameObject foxSeatingPrefab;    
     public GameObject raccoonSeatingPrefab;   
-    public GameObject dogSeatingPrefab;       
+    public GameObject dogSeatingPrefab;
+    public GameObject hawkSeatingPrefab;
 
     public Transform foxPosition;             
     public Transform raccoonPosition;       
     public Transform dogPosition;
+    public Transform hawkPosition;  
 
     public AudioSource Leave;
 
@@ -34,6 +36,12 @@ public class CustomerSeatingManager : MonoBehaviour
         {
             seatingPrefab = dogSeatingPrefab;
             seatingPosition = dogPosition;
+        }
+
+        else if (customerName == "Customer_Hawk")
+        {
+            seatingPrefab = hawkSeatingPrefab;
+            seatingPosition = hawkPosition;
         }
 
         // instantiate seating
