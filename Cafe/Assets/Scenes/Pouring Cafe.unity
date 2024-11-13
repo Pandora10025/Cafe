@@ -2255,9 +2255,9 @@ MonoBehaviour:
   pointer: {fileID: 1130519510}
   progressBar: {fileID: 1065441232}
   pointerSpeed: 6
-  perfectStartX: 15.9
+  perfectStartX: -11.7
   perfectEndX: 57.3
-  progressEndX: 116.3
+  progressEndX: 60
   pitcherWithFoamSprite: {fileID: 21300000, guid: 3de6ac298088b374c82b12ef6075aad1, type: 3}
   pitcherWithMilkSprite: {fileID: 21300000, guid: e76ec44981c9a68479c5e0ddab2bff2b, type: 3}
   steamWandAudio: {fileID: 1823230941}
@@ -3844,7 +3844,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -327.93182, y: 111.58317}
+  m_AnchoredPosition: {x: -929, y: 111.58317}
   m_SizeDelta: {x: 33.4225, y: 29.5106}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1130519512
